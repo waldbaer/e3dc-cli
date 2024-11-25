@@ -1,4 +1,5 @@
 [![MIT License](https://img.shields.io/github/license/waldbaer/e3dc-cli?style=flat-square)](https://opensource.org/licenses/MIT)
+
 [![GitHub issues open](https://img.shields.io/github/issues/waldbaer/e3dc-cli?style=flat-square)](https://github.com/waldbaer/e3dc-cli/issues)
 
 
@@ -34,7 +35,7 @@ source ./venv/bin/activate
 - Query live status (system, batteries, inverter, ...)
 - Query historical data (day, month, ...)
 - Multiple queries
-- Machine-readble JSON output
+- Machine-readable JSON output
 
 ## Usage
 

@@ -59,7 +59,7 @@ def main():
 
 def ParseConfig():
   argparser = ArgumentParser(prog="e3dc-cli.py",
-                             description=f"E3/DC SCRP command line interface access | Version {__version__} | {__copyright__}",
+                             description=f"Query E3/DC systems | Version {__version__} | {__copyright__}",
                              env_prefix="E3DC_CLI",
                              default_config_files=['./config.json'],
                              version=__version__)
