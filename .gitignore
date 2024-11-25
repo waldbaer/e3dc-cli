@@ -1,0 +1,9 @@
+# IDE
+.vscode
+
+# Python virtualenv
+virtualenv
+venv
+
+# Configuration containing credentials
+config.json
