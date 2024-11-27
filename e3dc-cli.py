@@ -35,6 +35,7 @@ class QueryType(Enum):
     live_system = 'live_system'
     live_battery = 'live_battery'
     live_inverter = 'live_inverter'
+    live_wallbox = 'live_wallbox'
     history_today = 'history_today'
     history_yesterday = 'history_yesterday'
     history_week = 'history_week'
@@ -83,6 +84,7 @@ def ParseConfig():
                          choices=[
                            # Live queries
                            QueryType.live.name, QueryType.live_system.name, QueryType.live_battery.name, QueryType.live_inverter.name,
+                           QueryType.live_wallbox.name,
                            # History queries
                            QueryType.history_today.name, QueryType.history_yesterday.name,
                            QueryType.history_week.name, QueryType.history_previous_week.name,
@@ -115,6 +117,8 @@ def RunSingleQuery(e3dc, query):
     e3dc_data = e3dc.get_battery_data(keepAlive=True)
   elif query == QueryType.live_inverter.name:
     e3dc_data = e3dc.get_pvi_data(keepAlive=True)
+  elif query == QueryType.live_wallbox.name:
+    e3dc_data = e3dc.get_wallbox_data(keepAlive=True)
 
   # ---- History Queries ----
   elif query == QueryType.history_today.name:
