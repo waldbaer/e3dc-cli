@@ -37,6 +37,7 @@ current_timezone = get_localzone()
 class QueryType(Enum):
   live = ("live",)
   live_system = "live_system"
+  live_powermeter = "live_powermeter"
   live_battery = "live_battery"
   live_inverter = "live_inverter"
   live_wallbox = "live_wallbox"
@@ -103,6 +104,7 @@ def ParseConfig():
           # Live queries
           QueryType.live.name,
           QueryType.live_system.name,
+          QueryType.live_powermeter.name,
           QueryType.live_battery.name,
           QueryType.live_inverter.name,
           QueryType.live_wallbox.name,
@@ -162,7 +164,8 @@ def RunSingleQuery(e3dc, query):
       del sys_status[RSCP_ATTRIB_POWER_SAVE_ENABLED]
     power_settings = e3dc.get_power_settings(keepAlive=True)
     result = MergeDictionaries(sys_status, power_settings)
-
+  elif query == QueryType.live_powermeter.name:
+    result = e3dc.get_powermeter_data(keepAlive=True)
   elif query == QueryType.live_battery.name:
     result = e3dc.get_battery_data(keepAlive=True)
   elif query == QueryType.live_inverter.name:
