@@ -1,5 +1,4 @@
 [![MIT License](https://img.shields.io/github/license/waldbaer/e3dc-cli?style=flat-square)](https://opensource.org/licenses/MIT)
-
 [![GitHub issues open](https://img.shields.io/github/issues/waldbaer/e3dc-cli?style=flat-square)](https://github.com/waldbaer/e3dc-cli/issues)
 
 
