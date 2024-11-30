@@ -7,3 +7,7 @@ venv
 
 # Configuration containing credentials
 config.json
+
+# Temporary files
+__pycache__
+*.pyc
