@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 
 # ---- Imports ----
+from enum import Enum
+from typing import Any, Optional, List, Dict
+from pydantic import SecretStr
+
 import sys
 import traceback
-from typing import Any, Optional, List, Dict
 
-
-from docstring_parser import DocstringStyle
-from jsonargparse import set_docstring_parse_options
 from jsonargparse import ArgumentParser
-
-from pydantic import SecretStr
-from enum import Enum
 
 # https://github.com/fsantini/python-e3dc
 from e3dc import E3DC
@@ -19,19 +16,16 @@ import json
 from lib.connection import ConnectionType, SetupConnectionToE3DC
 from lib.query import QueryType, RunMultiQuery
 from lib.setter import (
-    SetPowerLimitsConfig,
     SetPowerLimits,
     SetPowerSave,
     SetWeatherRegulatedCharge,
 )
 
-# , RunMultiSet
-
 # ---- Constants & Types -------------------------------------------------------------------------------------------------------
 __author__ = "Sebastian Waldvogel"
 __copyright__ = "Copyright 2022-2024, Sebastian Waldvogel"
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "0.1.0"
 
 
 # ---- Main Logic ------------------------------------------------------------------------------------------------------
@@ -39,7 +33,7 @@ __version__ = "1.0.0"
 
 def Main():
     args = ParseConfig()
-    e3dc = SetupConnectionToE3DC(args.connection, args.e3dc_config)
+    e3dc = SetupConnectionToE3DC(args.connection, args.extended_config)
 
     output = {}
 
@@ -53,7 +47,7 @@ def Main():
 def RunSetCommands(e3dc, args, output):
     collected_results = {}
 
-    if args.set_power_limits != None:
+    if args.set_power_limits.enable != None:
         collected_results["power_limits"] = SetPowerLimits(e3dc, args.set_power_limits)
     if args.set_powersave != None:
         collected_results["powersave"] = SetPowerSave(e3dc, args.set_powersave)
@@ -70,8 +64,6 @@ def RunSetCommands(e3dc, args, output):
 
 
 def ParseConfig():
-    set_docstring_parse_options(style=DocstringStyle.REST)
-    set_docstring_parse_options(attribute_docstrings=True)
     argparser = ArgumentParser(
         prog="e3dc-cli.py",
         description=f"Query E3/DC systems | Version {
@@ -117,24 +109,54 @@ def ParseConfig():
         help="Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'.",
     )
 
-    # Advanced config of devices enumeration etc.
-    argparser.add_argument("--e3dc_config.powermeters", type=List[Dict[str, Any]])
-    argparser.add_argument("--e3dc_config.pvis", type=List[Dict[str, Any]])
-    argparser.add_argument("--e3dc_config.batteries", type=List[Dict[str, Any]])
-
-    # Queries
+    # ---- Queries ----
     argparser.add_argument(
         "-q",
         "--query",
         type=QueryType,
         nargs="*",
+        help="Perform one or multiple status / history queries of the solar inverter system.",
     )
 
-    # Setter
-    argparser.add_argument("--set_power_limits", type=Optional[SetPowerLimitsConfig])
-    argparser.add_argument("--set_powersave", type=Optional[bool])
-    argparser.add_argument("--set_weather_regulated_charge", type=Optional[bool])
+    # ---- Setter ----
+    argparser.add_argument(
+        "--set_power_limits.enable",
+        type=Optional[bool],
+        help="True: enable manual SmartPower limits. False: Use automatic mode.",
+    )
+    argparser.add_argument(
+        "--set_power_limits.max_charge",
+        type=Optional[int],
+        help="SmartPower maximum charging power [watt]. Only relevant if manual SmartPower limits are enabled.",
+    )
+    argparser.add_argument(
+        "--set_power_limits.max_discharge",
+        type=Optional[int],
+        help="SmartPower maximum discharging power [watt]. Only relevant if manual SmartPower limits are enabled.",
+    )
+    argparser.add_argument(
+        "--set_power_limits.discharge_start",
+        type=Optional[int],
+        help="SmartPower lower charge / discharge threshold [watts]. Only relevant if manual SmartPower limits are enabled.",
+    )
 
+    argparser.add_argument(
+        "--set_powersave",
+        type=Optional[bool],
+        help="Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use).",
+    )
+    argparser.add_argument(
+        "--set_weather_regulated_charge",
+        type=Optional[bool],
+        help="Enabled / Disable optimized charging based on the weather forecast.",
+    )
+
+    # ---- Advanced config of devices enumeration etc. ---
+    argparser.add_argument("--extended_config.powermeters", type=List[Dict[str, Any]])
+    argparser.add_argument("--extended_config.pvis", type=List[Dict[str, Any]])
+    argparser.add_argument("--extended_config.batteries", type=List[Dict[str, Any]])
+
+    # ---- Finally parse the inputs  ----
     args = argparser.parse_args()
 
     # Custom consistency check

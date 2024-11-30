@@ -5,12 +5,13 @@ from enum import Enum
 from typing import Dict
 
 # https://github.com/fsantini/python-e3dc
+from lib.connection import E3DC
+
 import datetime
 import time
 from tzlocal import get_localzone
 from calendar import monthrange
 from dateutil.relativedelta import relativedelta
-from lib.connection import E3DC
 
 # Constants
 DAYS_IN_A_WEEK = 7

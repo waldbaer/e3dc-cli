@@ -1,5 +1,4 @@
 pye3dc==0.9.2
 tzlocal==5.2
 jsonargparse==4.34.0
-docstring_parser==0.16
 pydantic==2.10.1

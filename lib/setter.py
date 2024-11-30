@@ -4,8 +4,8 @@
 from enum import Enum
 from typing import Any, Dict, Optional
 from jsonargparse.typing import final
+from dataclasses import dataclass
 
-# https://github.com/fsantini/python-e3dc
 from lib.connection import E3DC
 
 # ---- Constants & Types -----------------------------------------------------------------------------------------------
@@ -13,37 +13,12 @@ from lib.connection import E3DC
 KEEP_ALIVE = True
 
 
-@final
-class SetPowerLimitsConfig:
-
-    enabled: bool
-    """True: Enable custom/manual SmartPower configuration. Flase: Use Automatic Mode."""
-    max_charge: Optional[int]
-    """Maximum charging power [watts]"""
-    max_discharge: Optional[int]
-    """Maximum discharging power [watts]"""
-    discharge_start: Optional[int]
-    """Lower charge / discharge threshold [watts]"""
-
-    def __init__(
-        self,
-        enabled: bool = True,
-        max_charge: Optional[int] = None,
-        max_discharge: Optional[int] = None,
-        discharge_start: Optional[int] = None,
-    ):
-        self.enabled = enabled
-        self.max_charge = max_charge
-        self.max_discharge = max_discharge
-        self.discharge_start = discharge_start
-
-
 # ---- Query Logic -----------------------------------------------------------------------------------------------------
 
 
-def SetPowerLimits(e3dc: E3DC, set_power_limits: SetPowerLimitsConfig):
+def SetPowerLimits(e3dc: E3DC, set_power_limits: Dict):
     e3dc_result = e3dc.set_power_limits(
-        enable=set_power_limits.enabled,
+        enable=set_power_limits.enable,
         max_charge=set_power_limits.max_charge,
         max_discharge=set_power_limits.max_discharge,
         discharge_start=set_power_limits.discharge_start,

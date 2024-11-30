@@ -21,12 +21,12 @@ class ConnectionType(Enum):
 # ---- Connection with E3/DC system -----------------------------------------------------------------------------------
 
 
-def SetupConnectionToE3DC(connection_config: Dict, e3dc_config: Dict):
+def SetupConnectionToE3DC(connection_config: Dict, extended_config: Dict):
     params = {
         "username": connection_config.user.get_secret_value(),
         "password": connection_config.password.get_secret_value(),
         # Extended E3/DC configuration
-        "configuration": e3dc_config,
+        "configuration": extended_config,
         # IP address only needed for local connection
         "ipAddress": connection_config.address,
         # RSCP password only needed for local connection
