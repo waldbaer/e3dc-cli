@@ -57,13 +57,21 @@ def SetPowerSave(e3dc: E3DC, set_powersave: bool):
         enable=set_powersave,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict({"enabled": set_powersave}, e3dc_result)
+    return BuildResultDict({"enable": set_powersave}, e3dc_result)
+
+
+def SetWeatherRegulatedCharge(e3dc: E3DC, set_weather_regulated_charge: bool):
+    e3dc_result = e3dc.set_weather_regulated_charge(
+        enable=set_weather_regulated_charge,
+        keepAlive=KEEP_ALIVE,
+    )
+    return BuildResultDict({"enable": set_weather_regulated_charge}, e3dc_result)
 
 
 # ---- Utilities -------------------------------------------------------------------------------------------------------
 
 
-def ToHumanSetResult(result_code: int):
+def ToHumanResult(result_code: int):
     human_result = "n/a"
     if result_code == 0:
         human_result = "success"
@@ -79,6 +87,6 @@ def ToHumanSetResult(result_code: int):
 def BuildResultDict(input_arguments: Dict, result_code):
     return {
         "input_parameters": input_arguments,
-        "result": ToHumanSetResult(result_code),
+        "result": ToHumanResult(result_code),
         "result_code": result_code,
     }

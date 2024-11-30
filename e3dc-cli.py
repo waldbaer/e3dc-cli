@@ -22,6 +22,7 @@ from lib.setter import (
     SetPowerLimitsConfig,
     SetPowerLimits,
     SetPowerSave,
+    SetWeatherRegulatedCharge,
 )
 
 # , RunMultiSet
@@ -56,6 +57,10 @@ def RunSetCommands(e3dc, args, output):
         collected_results["power_limits"] = SetPowerLimits(e3dc, args.set_power_limits)
     if args.set_powersave != None:
         collected_results["powersave"] = SetPowerSave(e3dc, args.set_powersave)
+    if args.set_weather_regulated_charge != None:
+        collected_results["weather_regulated_charge"] = SetWeatherRegulatedCharge(
+            e3dc, args.set_weather_regulated_charge
+        )
 
     if collected_results.keys():
         output["set"] = collected_results
@@ -128,6 +133,7 @@ def ParseConfig():
     # Setter
     argparser.add_argument("--set_power_limits", type=Optional[SetPowerLimitsConfig])
     argparser.add_argument("--set_powersave", type=Optional[bool])
+    argparser.add_argument("--set_weather_regulated_charge", type=Optional[bool])
 
     args = argparser.parse_args()
 
