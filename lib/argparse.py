@@ -83,13 +83,19 @@ Example:
     argparser.add_argument(
         "--connection.type",
         type=ConnectionType,
-        help="Connection type used for communication with the E3/DC system",
+        help="""Connection type used for communication with the E3/DC system
+
+local  Use local RSCP connection (recommended)
+web    Use web connection
+""",
         default=ConnectionType.local,
     )
     argparser.add_argument(
         "--connection.address",
         type=Optional[str],
-        help="IP or DNS address of the E3/DC system. Only relevant for connection type 'local'.",
+        help="""IP or DNS address of the E3/DC system.
+Only relevant for connection type 'local'.
+""",
     )
     argparser.add_argument(
         "--connection.user",
@@ -104,12 +110,16 @@ Example:
     argparser.add_argument(
         "--connection.rscp_password",
         type=Optional[SecretStr],
-        help=f"RSCP password (set on the device via Main Page -> Personalize -> User profile -> RSCP password). Only relevant for connection type 'local'.",
+        help="""RSCP password. Set on the device via Main Page -> Personalize -> User profile -> RSCP password.
+Only relevant for connection type 'local',
+""",
     )
     argparser.add_argument(
         "--connection.serial_number",
         type=Optional[SecretStr],
-        help="Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'.",
+        help="""Serial number of the system (see 'SN' in E3/DC portal).
+Only relevant for connection type 'web'.
+""",
     )
 
     # ---- Queries ----
@@ -145,32 +155,41 @@ Accumulated Historic Values including production, consumption, battery in/out po
     argparser.add_argument(
         "--set_power_limits.enable",
         type=Optional[bool],
+        metavar="{true,false}",
         help="True: enable manual SmartPower limits. False: Use automatic mode.",
     )
     argparser.add_argument(
         "--set_power_limits.max_charge",
         type=Optional[int],
-        help="SmartPower maximum charging power [watt]. Only relevant if manual SmartPower limits are enabled.",
+        help="""SmartPower maximum charging power. Unit: Watt.
+Only relevant if manual SmartPower limits are enabled.
+""",
     )
     argparser.add_argument(
         "--set_power_limits.max_discharge",
         type=Optional[int],
-        help="SmartPower maximum discharging power [watt]. Only relevant if manual SmartPower limits are enabled.",
+        help="""SmartPower maximum discharging power. Unit: Watt.
+Only relevant if manual SmartPower limits are enabled.
+""",
     )
     argparser.add_argument(
         "--set_power_limits.discharge_start",
         type=Optional[int],
-        help="SmartPower lower charge / discharge threshold [watts]. Only relevant if manual SmartPower limits are enabled.",
+        help="""SmartPower lower charge / discharge threshold. Unit: Watt.
+Only relevant if manual SmartPower limits are enabled.
+""",
     )
 
     argparser.add_argument(
         "--set_powersave",
         type=Optional[bool],
+        metavar="{true,false}",
         help="Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use).",
     )
     argparser.add_argument(
         "--set_weather_regulated_charge",
         type=Optional[bool],
+        metavar="{true,false}",
         help="Enabled / Disable optimized charging based on the weather forecast.",
     )
 
@@ -179,19 +198,22 @@ Accumulated Historic Values including production, consumption, battery in/out po
         "--extended_config.powermeters",
         metavar="{ EXTENDED POWERMETERS CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
-        help="Extended power meters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration",
+        help="""Extended power meters configuration.
+For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
     argparser.add_argument(
         "--extended_config.pvis",
         metavar="{ EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
-        help="Extended solar inverters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration",
+        help="""Extended solar inverters configuration.
+For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
     argparser.add_argument(
         "--extended_config.batteries",
         metavar="{ EXTENDED BATTERIES CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
-        help="Extended batteries configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration",
+        help="""Extended batteries configuration.
+For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
 
     # ---- Finally parse the inputs  ----

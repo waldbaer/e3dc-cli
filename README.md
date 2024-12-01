@@ -248,9 +248,9 @@ $> ./e3dc-cli.py --help
 Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
                    [--connection.serial_number SERIAL_NUMBER]
                    [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
-                   [--set_power_limits.enable {true,false,null}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START]
-                   [--set_powersave {true,false,null}] [--set_weather_regulated_charge {true,false,null}] [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }]
-                   [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }] [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
+                   [--set_power_limits.enable {true,false}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START] [--set_powersave {true,false}]
+                   [--set_weather_regulated_charge {true,false}] [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }] [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
+                   [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
 Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
 
@@ -291,17 +291,27 @@ Options:
 
   -o, --output OUTPUT   Path of JSON output file. If not set JSON output is written to console / stdout (type: None, default: None)
   --connection.type {local,web}
-                        Connection type used for communication with the E3/DC system (type: None, default: local)
+                        Connection type used for communication with the E3/DC system
+
+                        local  Use local RSCP connection (recommended)
+                        web    Use web connection
+                         (type: None, default: local)
   --connection.address ADDRESS
-                        IP or DNS address of the E3/DC system. Only relevant for connection type 'local'. (type: None, default: None)
+                        IP or DNS address of the E3/DC system.
+                        Only relevant for connection type 'local'.
+                         (type: None, default: None)
   --connection.user USER
                         Username (similar to the E3/DC portal) (type: None, default: None)
   --connection.password PASSWORD
                         Password (similar to the E3/DC portal) (type: None, default: None)
   --connection.rscp_password RSCP_PASSWORD
-                        RSCP password (set on the device via Main Page -> Personalize -> User profile -> RSCP password). Only relevant for connection type 'local'. (type: None, default: None)
+                        RSCP password. Set on the device via Main Page -> Personalize -> User profile -> RSCP password.
+                        Only relevant for connection type 'local',
+                         (type: None, default: None)
   --connection.serial_number SERIAL_NUMBER
-                        Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'. (type: None, default: None)
+                        Serial number of the system (see 'SN' in E3/DC portal).
+                        Only relevant for connection type 'web'.
+                         (type: None, default: None)
   -q, --query [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
                         Perform one or multiple live status or history queries:
 
@@ -324,24 +334,33 @@ Options:
                         - history_previous_year     Previous Year
                         - history_total             Since 1970-01-01
                          (type: None, default: None)
-  --set_power_limits.enable {true,false,null}
+  --set_power_limits.enable {true,false}
                         True: enable manual SmartPower limits. False: Use automatic mode. (type: None, default: None)
   --set_power_limits.max_charge MAX_CHARGE
-                        SmartPower maximum charging power . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
+                        SmartPower maximum charging power. Unit: Watt.
+                        Only relevant if manual SmartPower limits are enabled.
+                         (type: None, default: None)
   --set_power_limits.max_discharge MAX_DISCHARGE
-                        SmartPower maximum discharging power . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
+                        SmartPower maximum discharging power. Unit: Watt.
+                        Only relevant if manual SmartPower limits are enabled.
+                         (type: None, default: None)
   --set_power_limits.discharge_start DISCHARGE_START
-                        SmartPower lower charge / discharge threshold . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
-  --set_powersave {true,false,null}
+                        SmartPower lower charge / discharge threshold. Unit: Watt.
+                        Only relevant if manual SmartPower limits are enabled.
+                         (type: None, default: None)
+  --set_powersave {true,false}
                         Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: None, default: None)
-  --set_weather_regulated_charge {true,false,null}
+  --set_weather_regulated_charge {true,false}
                         Enabled / Disable optimized charging based on the weather forecast. (type: None, default: None)
   --extended_config.powermeters, --extended_config.powermeters+ { EXTENDED POWERMETERS CONFIG HIERARCHY }
-                        Extended power meters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+                        Extended power meters configuration.
+                        For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
   --extended_config.pvis, --extended_config.pvis+ { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }
-                        Extended solar inverters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+                        Extended solar inverters configuration.
+                        For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
   --extended_config.batteries, --extended_config.batteries+ { EXTENDED BATTERIES CONFIG HIERARCHY }
-                        Extended batteries configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+                        Extended batteries configuration.
+                        For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
 ```
 
 ## Acknowledgments
