@@ -3,8 +3,6 @@
 # ---- Imports ----
 from enum import Enum
 from typing import Any, Dict, Optional
-from jsonargparse.typing import final
-from dataclasses import dataclass
 
 from lib.connection import E3DC
 
@@ -13,7 +11,7 @@ from lib.connection import E3DC
 KEEP_ALIVE = True
 
 
-# ---- Query Logic -----------------------------------------------------------------------------------------------------
+# ---- Setter Logic -----------------------------------------------------------------------------------------------------
 
 
 def SetPowerLimits(e3dc: E3DC, set_power_limits: Dict):

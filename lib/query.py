@@ -12,7 +12,8 @@ from tzlocal import get_localzone
 from calendar import monthrange
 from dateutil.relativedelta import relativedelta
 
-# Constants
+# ---- Constants & Types -----------------------------------------------------------------------------------------------
+
 DAYS_IN_A_WEEK = 7
 HOURS_IN_A_DAY = 24
 DAYS_IN_A_YEAR = 365

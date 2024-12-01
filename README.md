@@ -7,7 +7,6 @@
 ## Introduction
 This command-line tool allows users to query live and historical data from E3/DC solar inverters and perform configuration changes. It leverages the excellent [python-e3dc](https://github.com/fsantini/python-e3dc) library for seamless integration with E3/DC systems.
 
-
 Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) library, this tool supports configuration and control via command-line parameters or a JSON configuration file.
 
 ## Features
@@ -77,7 +76,7 @@ Store all connection and credential parameters in JSON configuration file called
 {
     "connection" : {
         "type" : "local",
-        "address": "<URL to your local E3/DC system>",
+        "address": "<IP or DNS address to the local E3/DC system>",
         "user": "<username>",
         "password": "<password>",
         "rscp_password": "<RSCP password>",
@@ -246,59 +245,103 @@ Extended configuration settings (see [chapter 'configuration' of python-e3dc](ht
 Details about all available options:
 ```
 $> ./e3dc-cli.py --help
-usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [--print_config[=flags]] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD]
-                   [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
+Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
+                   [--connection.serial_number SERIAL_NUMBER]
                    [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
                    [--set_power_limits.enable {true,false,null}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START]
-                   [--set_powersave {true,false,null}] [--set_weather_regulated_charge {true,false,null}] [--extended_config.powermeters POWERMETERS] [--extended_config.pvis PVIS] [--extended_config.batteries BATTERIES]
+                   [--set_powersave {true,false,null}] [--set_weather_regulated_charge {true,false,null}] [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }]
+                   [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }] [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
-Query E3/DC systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
+Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
 
-default config file locations:
+Default Config File Locations:
   ['./config.json'], Note: default values below are the ones overridden by the contents of: ./config.json
 
-options:
+Options:
   -h, --help            Show this help message and exit.
   --version             Print version and exit.
-  -c CONFIG, --config CONFIG
-                        Configuration File
-  --print_config[=flags]
-                        Print the configuration after applying all other arguments and exit. The optional flags customizes the output and are one or more keywords separated by comma. The supported flags are: comments, skip_default,
-                        skip_null.
-  -o OUTPUT, --output OUTPUT
-                        Path of JSON output file. If not set JSON output is written to console / stdout (type: Optional[str], default: null)
+  -c, --config CONFIG   Path to JSON configuration file.
+
+                        All command line arguments can also be provided via an JSON configuration file (default: config.json).
+                        A combination of both methods is also supported.
+
+                        The JSON hierarchy can be derived from the shown command line arguments document in this help text.
+                        The nested JSON hierarchies are defined by the "." dot notation.
+
+                        Example:
+                            The following list of cli parameters:
+                            --connection.type,
+                            --connection.address,
+                            --connection.user
+                            --connection.password
+                            --connection.rscp_password
+
+                            is equivalent to the following JSON config file content:
+
+                            {
+                                "connection" : {
+                                    "type" : "local",
+                                    "address": "<IP or DNS address to the local E3/DC system>",
+                                    "user": "<username>",
+                                    "password": "<password>",
+                                    "rscp_password": "<RSCP password>",
+                                },
+                                ...
+                            }
+
+  -o, --output OUTPUT   Path of JSON output file. If not set JSON output is written to console / stdout (type: None, default: None)
   --connection.type {local,web}
-                        Connection type used for communication with the E3/DC system (type: ConnectionType, default: local)
+                        Connection type used for communication with the E3/DC system (type: None, default: local)
   --connection.address ADDRESS
-                        IP or DNS address of the E3/DC system. Only relevant for connection type 'local'. (type: Optional[str], default: null)
+                        IP or DNS address of the E3/DC system. Only relevant for connection type 'local'. (type: None, default: None)
   --connection.user USER
-                        Username (similar to the E3/DC portal) (type: <class 'SecretStr'>, default: null)
+                        Username (similar to the E3/DC portal) (type: None, default: None)
   --connection.password PASSWORD
-                        Password (similar to the E3/DC portal) (type: <class 'SecretStr'>, default: null)
+                        Password (similar to the E3/DC portal) (type: None, default: None)
   --connection.rscp_password RSCP_PASSWORD
-                        RSCP password (set on the device via Main Page -> Personalize -> User profile -> RSCP password). Only relevant for connection type 'local'. (type: Optional[SecretStr], default: null)
+                        RSCP password (set on the device via Main Page -> Personalize -> User profile -> RSCP password). Only relevant for connection type 'local'. (type: None, default: None)
   --connection.serial_number SERIAL_NUMBER
-                        Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'. (type: Optional[SecretStr], default: null)
-  -q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...], --query [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
-                        Perform one or multiple status / history queries of the solar inverter system. (type: QueryType, default: null)
+                        Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'. (type: None, default: None)
+  -q, --query [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
+                        Perform one or multiple live status or history queries:
+
+                        Real-Time Status queries:
+                        - live                      Condensed status information (consumption, production, SoC, autarky, ...)
+                        - live_system               General system status and power settings
+                        - live_powermeter           Power meter status (power, energy and voltage of L1-L3, ...)
+                        - live_battery              Battery status (SoC, temperatures, capacity, charge cycles, ...)
+                        - live_inverter             Solar inverter status (input strings status, output phases, temperatures)
+                        - live_wallbox              EV Wallbox status (SoC, consumption, max. charge current, ...)
+
+                        Accumulated Historic Values including production, consumption, battery in/out power, grid in/out power, autarky
+                        - history_today             Today
+                        - history_yesterday         Yesterday
+                        - history_week              Current Week (first day of week: Monday)
+                        - history_previous_week     Previous Week (first day of week: Monday)
+                        - history_month             Current Month
+                        - history_previous_month    Previous Month
+                        - history_year              Current Year (starting 01.Jan)
+                        - history_previous_year     Previous Year
+                        - history_total             Since 1970-01-01
+                         (type: None, default: None)
   --set_power_limits.enable {true,false,null}
-                        True: enable manual SmartPower limits. False: Use automatic mode. (type: Optional[bool], default: null)
+                        True: enable manual SmartPower limits. False: Use automatic mode. (type: None, default: None)
   --set_power_limits.max_charge MAX_CHARGE
-                        SmartPower maximum charging power [watt]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+                        SmartPower maximum charging power . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
   --set_power_limits.max_discharge MAX_DISCHARGE
-                        SmartPower maximum discharging power [watt]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+                        SmartPower maximum discharging power . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
   --set_power_limits.discharge_start DISCHARGE_START
-                        SmartPower lower charge / discharge threshold [watts]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+                        SmartPower lower charge / discharge threshold . Only relevant if manual SmartPower limits are enabled. (type: None, default: None)
   --set_powersave {true,false,null}
-                        Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: Optional[bool], default: null)
+                        Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: None, default: None)
   --set_weather_regulated_charge {true,false,null}
-                        Enabled / Disable optimized charging based on the weather forecast. (type: Optional[bool], default: null)
-  --extended_config.powermeters POWERMETERS, --extended_config.powermeters+ POWERMETERS
-                        (type: List[Dict[str, Any]], default: null)
-  --extended_config.pvis PVIS, --extended_config.pvis+ PVIS
-                        (type: List[Dict[str, Any]], default: null)
-  --extended_config.batteries BATTERIES, --extended_config.batteries+ BATTERIES
-                        (type: List[Dict[str, Any]], default: null)
+                        Enabled / Disable optimized charging based on the weather forecast. (type: None, default: None)
+  --extended_config.powermeters, --extended_config.powermeters+ { EXTENDED POWERMETERS CONFIG HIERARCHY }
+                        Extended power meters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+  --extended_config.pvis, --extended_config.pvis+ { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }
+                        Extended solar inverters configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+  --extended_config.batteries, --extended_config.batteries+ { EXTENDED BATTERIES CONFIG HIERARCHY }
+                        Extended batteries configuration. For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
 ```
 
 ## Acknowledgments
