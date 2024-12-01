@@ -56,15 +56,21 @@ pip install -r requirements.txt
 
 ## Usage
 
-All parameters can be passed as command line arguments and/or via a JSON configuration file (default: `config.json`).
-A mixed-use of cli parameters and the JSON configuration file is possible.
+All parameters can be provided either as command-line arguments or through a JSON configuration file (default: `config.json`).
+A combination of both methods is also supported.
 
-A typical usage would be the definition of all credentials via
-the JSON configuration file. Concrete queries / set operations are then passed as command line arguments. But it is also possible to define all credentials via cli parameters, or to define the executed queries / set operations in the JSON configuration file.
+A common approach is to define all credentials in the JSON configuration file, while specifying specific queries or set operations as command-line arguments.
+Alternatively, you can define all credentials via command-line parameters or include the executed queries and set operations directly in the JSON configuration file.
 
-The results for all executed queries and configuration modifications are returned as JSON output. This output can be directly passed to further automation platforms like [Node-RED](https://nodered.org/) for processing for the results.
+The results of all executed queries and configuration modifications are returned as JSON output.
+This output can be displayed directly in the terminal or saved to a JSON file.
+It includes structured JSON hierarchies for each executed query and configuration modification.
 
-### Example 1: Pass Credentials via config.json, use local connection
+The machine-readable JSON output format is designed for seamless integration with automation platforms, such as [Node-RED](https://nodered.org/), which typically execute the e3dc-cli.py tool.
+
+### Examples
+
+#### Example 1: Pass Credentials via config.json, use local connection
 
 Store all connection and credential parameters in JSON configuration file called `config.json`:
 ```
@@ -126,7 +132,7 @@ $> ./e3dc-cli.py --query live history_today --set_powersave true
 }
 ```
 
-### Example 2: Pass all parameters via config.json, use web connection
+#### Example 2: Pass all parameters via config.json, use web connection
 
 Create `config.json` containing all parameters:
 ```
@@ -204,11 +210,43 @@ $> ./e3dc-cli.py
 }
 ```
 
+
+### Extended E3/DC configuration
+
+Extended configuration settings (see [chapter 'configuration' of python-e3dc](https://github.com/fsantini/python-e3dc?tab=readme-ov-file#configuration)) can be passed via the `extended_config` parameters
+
+```
+{
+    "connection" : { ... },
+    "extended_config": {
+      "pvis": [
+        {
+          "index": 0,
+          "strings": 2,
+          "phases": 3
+        }
+      ],
+      "powermeters": [
+        {
+          "index": 6
+        }
+      ],
+      "batteries": [
+        {
+          "index": 0,
+          "dcbs": 2
+        }
+      ]
+    },
+    "query": [ ... ]
+}
+```
+
 ### All Available Parameters
 Details about all available options:
 ```
 $> ./e3dc-cli.py --help
-usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [--print_config[=flags]] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD]
+usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [--print_config[=flags]] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD]
                    [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
                    [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
                    [--set_power_limits.enable {true,false,null}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START]
@@ -227,6 +265,8 @@ options:
   --print_config[=flags]
                         Print the configuration after applying all other arguments and exit. The optional flags customizes the output and are one or more keywords separated by comma. The supported flags are: comments, skip_default,
                         skip_null.
+  -o OUTPUT, --output OUTPUT
+                        Path of JSON output file. If not set JSON output is written to console / stdout (type: Optional[str], default: null)
   --connection.type {local,web}
                         Connection type used for communication with the E3/DC system (type: ConnectionType, default: local)
   --connection.address ADDRESS
@@ -260,7 +300,6 @@ options:
   --extended_config.batteries BATTERIES, --extended_config.batteries+ BATTERIES
                         (type: List[Dict[str, Any]], default: null)
 ```
-
 
 ## Acknowledgments
 Special thanks to [python-e3dc](https://github.com/fsantini/python-e3dc) for providing the core library that powers this tool.

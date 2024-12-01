@@ -25,7 +25,7 @@ from lib.setter import (
 __author__ = "Sebastian Waldvogel"
 __copyright__ = "Copyright 2022-2024, Sebastian Waldvogel"
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 
 # ---- Main Logic ------------------------------------------------------------------------------------------------------
@@ -41,7 +41,12 @@ def Main():
         RunMultiQuery(e3dc, args.query, output)
     RunSetCommands(e3dc, args, output)
 
-    OutputJson(output)
+    e3dc.disconnect()
+
+    if args.output != None:
+        OutputJsonFile(args.output, output)
+    else:
+        OutputJsonStdout(output)
 
 
 def RunSetCommands(e3dc, args, output):
@@ -76,6 +81,14 @@ def ParseConfig():
 
     # JSON config file
     argparser.add_argument("-c", "--config", action="config", help="Configuration File")
+
+    # JSON output file
+    argparser.add_argument(
+        "-o",
+        "--output",
+        type=Optional[str],
+        help="Path of JSON output file. If not set JSON output is written to console / stdout",
+    )
 
     # Connection config
     argparser.add_argument(
@@ -186,11 +199,13 @@ def ParseConfig():
 # ---- Outputs ---------------------------------------------------------------------------------------------------------
 
 
-def OutputJson(collected_data: Dict):
+def OutputJsonStdout(collected_data: Dict):
     print(json.dumps(collected_data, indent=2, default=str, sort_keys=True))
 
 
-# ---- Utilities -------------------------------------------------------------------------------------------------------
+def OutputJsonFile(output_file_path: str, collected_data: Dict):
+    with open(output_file_path, "w", encoding="utf-8") as file:
+        json.dump(collected_data, fp=file, indent=2, default=str, sort_keys=True)
 
 
 # ---- Entrypoint ------------------------------------------------------------------------------------------------------
