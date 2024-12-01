@@ -11,5 +11,5 @@ echo "---- Query live data -----------------------------------------------------
 echo "--------------------------------------------------------------------------------------------"
 
 echo "---- Query history data --------------------------------------------------------------------"
-./e3dc-cli.py -q history_today history_yesterday history_week history_previous_week history_month history_previous_month history_year history_previous_year history_all
+./e3dc-cli.py -q history_today history_yesterday history_week history_previous_week history_month history_previous_month history_year history_previous_year history_total
 echo "---- Query history data --------------------------------------------------------------------"

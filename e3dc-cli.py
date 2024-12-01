@@ -69,6 +69,7 @@ def ParseConfig():
         description=f"Query E3/DC systems | Version {
           __version__} | {__copyright__}",
         env_prefix="E3DC_CLI",
+        default_env=False,
         default_config_files=["./config.json"],
         version=__version__,
     )

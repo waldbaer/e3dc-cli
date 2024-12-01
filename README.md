@@ -4,47 +4,82 @@
 
 # Command-line tool to query E3/DC systems
 
-Query live and history data from E3/DC systems (solar inverter)
-using the famous [python-e3dc](https://github.com/fsantini/python-e3dc) library.
+## Introduction
+This command-line tool allows users to query live and historical data from E3/DC solar inverters and perform configuration changes. It leverages the excellent [python-e3dc](https://github.com/fsantini/python-e3dc) library for seamless integration with E3/DC systems.
+
+
+Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) library, this tool supports configuration and control via command-line parameters or a JSON configuration file.
+
+## Features
+
+* Live Data Queries
+  * **Consumption and Production Data**: Retrieve real-time metrics on energy consumption and solar production.
+  * **System Status**: Access overall system health and status information.
+  * **Inverter Status**: Monitor the operational status of the solar inverter.
+  * **Battery Status**: View current battery state, including charge level, temperatures, currents and further performance metrics.
+  * **Wallbox Status**: Check the status of connected EV wallbox chargers.
+* Historical Data Queries
+  * Consumption and Production Data
+  * Supported Time Ranges
+    * **Day**: Current day and previous day
+    * **Week**: Current week and previous week
+    * **Month**: Current month and previous month
+    * **Year**: Current year and previous year
+    * **Total**: All-time historical data
+* Modify Configuration
+  * **Power Limits**: Set max. charge / discharge and lower charge / discharge limits
+  * **Power Save**: Enable / Disable PowerSave mode of the inverter
+  * **Weather Regulated Charge**: Enable / Disable usage of location-based weather forecast to improve usage of produced energy.
 
 ## Requirements ##
 
  - [Python 3.8](https://www.python.org/)
- - [virtualenv](https://virtualenv.readthedocs.org)
  - [pip (package manager)](https://pip.pypa.io/)
- - [pye3dc](https://github.com/fsantini/python-e3dc)
- - [tzlocal](https://github.com/regebro/tzlocal)
- - [jsonargparse](https://github.com/omni-us/jsonargparse/)
- - [pydantic](https://github.com/pydantic/pydantic)
 
-All dependencies are defined and installed via [requirements.txt](requirements.txt).
-
+All further python package dependencies are defined in [requirements.txt](requirements.txt).
 
 ## Setup
 ```
-# Setup python virtualenv
-python3 -m venv venv
-source ./venv/bin/activate
-# or
+# Setup python virtualenv and install all dependencies
 ./setup-venv.h
 source ./venv/bin/activate
 ```
 
-## Key features ##
-- Query live status (system, batteries, inverter, ...)
-- Query historical data (day, month, ...)
-- Multiple queries
-- Machine-readable JSON output
+Alternative: Manual installation
+```
+# Setup python virtualenv
+python3 -m venv venv
+source ./venv/bin/activate
+# Install dependencies
+pip install -r requirements.txt
+```
 
 ## Usage
 
-For details about the command line arguments please refer to the online help.
+All parameters can be passed as command line arguments and/or via a JSON configuration file (default: `config.json`).
+A mixed-use of cli parameters and the JSON configuration file is possible.
 
+A typical usage would be the definition of all credentials via
+the JSON configuration file. Concrete queries / set operations are then passed as command line arguments. But it is also possible to define all credentials via cli parameters, or to define the executed queries / set operations in the JSON configuration file.
+
+The results for all executed queries and configuration modifications are returned as JSON output. This output can be directly passed to further automation platforms like [Node-RED](https://nodered.org/) for processing for the results.
+
+### Example 1: Pass Credentials via config.json, use local connection
+
+Store all connection and credential parameters in JSON configuration file called `config.json`:
 ```
-./e3dc-cli.py --help
+{
+    "connection" : {
+        "type" : "local",
+        "address": "<URL to your local E3/DC system>",
+        "user": "<username>",
+        "password": "<password>",
+        "rscp_password": "<RSCP password>",
+    }
+}
 ```
 
-### Example output
+Run some concrete queries and modify the PowerSave system configuration:
 ```
 $> ./e3dc-cli.py --query live history_today --set_powersave true
 {
@@ -90,3 +125,142 @@ $> ./e3dc-cli.py --query live history_today --set_powersave true
   }
 }
 ```
+
+### Example 2: Pass all parameters via config.json, use web connection
+
+Create `config.json` containing all parameters:
+```
+{
+    "connection" : {
+        "type" : "web",
+        "user": "<username>",
+        "password": "<password>",
+        "serial_number": "<E3/DC system serial number>"
+    },
+    "query": ["live", "history_today"],
+    "set_power_limits":{
+      "enable": true,
+      "max_charge": 3500,
+      "max_discharge": 4500
+    },
+    "set_powersave": true
+}
+```
+
+Run tool without any further command line argument:
+```
+$> ./e3dc-cli.py
+{
+  "query": {
+    "history_today": {
+      "autarky": 38.567501068115234,
+      "bat_power_in": 11955.5,
+      "bat_power_out": 1715.0,
+      "consumed_production": 67.32454681396484,
+      "consumption": 17822.0,
+      "grid_power_in": 3336.0,
+      "grid_power_out": 10948.5,
+      "solarProduction": 21632.0,
+      "startTimestamp": 1733010300,
+      "stateOfCharge": 99.18399810791016,
+      "timespanSeconds": 86400
+    },
+    "live": {
+      "autarky": 99.99994659423828,
+      "consumption": {
+        "battery": 0,
+        "house": 241,
+        "wallbox": 0
+      },
+      "production": {
+        "add": 0,
+        "grid": -154,
+        "solar": 395
+      },
+      "selfConsumption": 61.367130279541016,
+      "stateOfCharge": 100,
+      "time": "2024-12-01 14:59:37.000891+00:00"
+    }
+  },
+  "set": {
+    "power_limits": {
+      "input_parameters": {
+        "discharge_start": null,
+        "enable": true,
+        "max_charge": 3500,
+        "max_discharge": 4500
+      },
+      "result": "success",
+      "result_code": 0
+    },
+    "powersave": {
+      "input_parameters": {
+        "enable": true
+      },
+      "result": "success",
+      "result_code": 0
+    }
+  }
+}
+```
+
+### All Available Parameters
+Details about all available options:
+```
+$> ./e3dc-cli.py --help
+usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [--print_config[=flags]] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD]
+                   [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
+                   [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
+                   [--set_power_limits.enable {true,false,null}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START]
+                   [--set_powersave {true,false,null}] [--set_weather_regulated_charge {true,false,null}] [--extended_config.powermeters POWERMETERS] [--extended_config.pvis PVIS] [--extended_config.batteries BATTERIES]
+
+Query E3/DC systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
+
+default config file locations:
+  ['./config.json'], Note: default values below are the ones overridden by the contents of: ./config.json
+
+options:
+  -h, --help            Show this help message and exit.
+  --version             Print version and exit.
+  -c CONFIG, --config CONFIG
+                        Configuration File
+  --print_config[=flags]
+                        Print the configuration after applying all other arguments and exit. The optional flags customizes the output and are one or more keywords separated by comma. The supported flags are: comments, skip_default,
+                        skip_null.
+  --connection.type {local,web}
+                        Connection type used for communication with the E3/DC system (type: ConnectionType, default: local)
+  --connection.address ADDRESS
+                        IP or DNS address of the E3/DC system. Only relevant for connection type 'local'. (type: Optional[str], default: null)
+  --connection.user USER
+                        Username (similar to the E3/DC portal) (type: <class 'SecretStr'>, default: null)
+  --connection.password PASSWORD
+                        Password (similar to the E3/DC portal) (type: <class 'SecretStr'>, default: null)
+  --connection.rscp_password RSCP_PASSWORD
+                        RSCP password (set on the device via Main Page -> Personalize -> User profile -> RSCP password). Only relevant for connection type 'local'. (type: Optional[SecretStr], default: null)
+  --connection.serial_number SERIAL_NUMBER
+                        Serial number of the system (see 'SN' in E3/DC portal). Only relevant for connection type 'web'. (type: Optional[SecretStr], default: null)
+  -q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...], --query [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
+                        Perform one or multiple status / history queries of the solar inverter system. (type: QueryType, default: null)
+  --set_power_limits.enable {true,false,null}
+                        True: enable manual SmartPower limits. False: Use automatic mode. (type: Optional[bool], default: null)
+  --set_power_limits.max_charge MAX_CHARGE
+                        SmartPower maximum charging power [watt]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+  --set_power_limits.max_discharge MAX_DISCHARGE
+                        SmartPower maximum discharging power [watt]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+  --set_power_limits.discharge_start DISCHARGE_START
+                        SmartPower lower charge / discharge threshold [watts]. Only relevant if manual SmartPower limits are enabled. (type: Optional[int], default: null)
+  --set_powersave {true,false,null}
+                        Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: Optional[bool], default: null)
+  --set_weather_regulated_charge {true,false,null}
+                        Enabled / Disable optimized charging based on the weather forecast. (type: Optional[bool], default: null)
+  --extended_config.powermeters POWERMETERS, --extended_config.powermeters+ POWERMETERS
+                        (type: List[Dict[str, Any]], default: null)
+  --extended_config.pvis PVIS, --extended_config.pvis+ PVIS
+                        (type: List[Dict[str, Any]], default: null)
+  --extended_config.batteries BATTERIES, --extended_config.batteries+ BATTERIES
+                        (type: List[Dict[str, Any]], default: null)
+```
+
+
+## Acknowledgments
+Special thanks to [python-e3dc](https://github.com/fsantini/python-e3dc) for providing the core library that powers this tool.

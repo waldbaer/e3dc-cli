@@ -4,7 +4,6 @@
 from enum import Enum
 from typing import Dict
 
-# https://github.com/fsantini/python-e3dc
 from lib.connection import E3DC
 
 import datetime
@@ -39,7 +38,7 @@ class QueryType(Enum):
     history_previous_month = "history_previous_month"
     history_year = "history_year"
     history_previous_year = "history_previous_year"
-    history_all = "history_all"
+    history_total = "history_total"
 
     def __str__(self):
         return self.value
@@ -106,7 +105,7 @@ def RunSingleQuery(e3dc: E3DC, query):
     elif query.name == QueryType.history_previous_year.name:
         result = RunHistoryQueryYear(e3dc, past_years_from_now=1)
 
-    elif query.name == QueryType.history_all.name:
+    elif query.name == QueryType.history_total.name:
         result = RunHistoryQueryAll(e3dc)
 
     else:
