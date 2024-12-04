@@ -14,31 +14,31 @@ KEEP_ALIVE = True
 # ---- Setter Logic -----------------------------------------------------------------------------------------------------
 
 
-def SetPowerLimits(e3dc: E3DC, set_power_limits: Dict):
+def SetPowerLimits(e3dc: E3DC, power_limits: Dict):
     e3dc_result = e3dc.set_power_limits(
-        enable=set_power_limits.enable,
-        max_charge=set_power_limits.max_charge,
-        max_discharge=set_power_limits.max_discharge,
-        discharge_start=set_power_limits.discharge_start,
+        enable=power_limits.enable,
+        max_charge=power_limits.max_charge,
+        max_discharge=power_limits.max_discharge,
+        discharge_start=power_limits.discharge_start,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict(vars(set_power_limits), e3dc_result)
+    return BuildResultDict(vars(power_limits), e3dc_result)
 
 
-def SetPowerSave(e3dc: E3DC, set_powersave: bool):
+def SetPowerSave(e3dc: E3DC, powersave: bool):
     e3dc_result = e3dc.set_powersave(
-        enable=set_powersave,
+        enable=powersave,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict({"enable": set_powersave}, e3dc_result)
+    return BuildResultDict({"enable": powersave}, e3dc_result)
 
 
-def SetWeatherRegulatedCharge(e3dc: E3DC, set_weather_regulated_charge: bool):
+def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool):
     e3dc_result = e3dc.set_weather_regulated_charge(
-        enable=set_weather_regulated_charge,
+        enable=weather_regulated_charge,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict({"enable": set_weather_regulated_charge}, e3dc_result)
+    return BuildResultDict({"enable": weather_regulated_charge}, e3dc_result)
 
 
 # ---- Utilities -------------------------------------------------------------------------------------------------------

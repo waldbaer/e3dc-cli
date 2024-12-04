@@ -35,7 +35,7 @@ def Main():
 
     if args.query != None:
         RunMultiQuery(e3dc, args.query, output)
-    RunSetCommands(e3dc, args, output)
+    RunSetCommands(e3dc, args.set, output)
 
     e3dc.disconnect()
 
@@ -45,16 +45,18 @@ def Main():
         OutputJsonStdout(output)
 
 
-def RunSetCommands(e3dc, args, output):
+def RunSetCommands(e3dc, set_config, output):
     collected_results = {}
 
-    if args.set_power_limits.enable != None:
-        collected_results["power_limits"] = SetPowerLimits(e3dc, args.set_power_limits)
-    if args.set_powersave != None:
-        collected_results["powersave"] = SetPowerSave(e3dc, args.set_powersave)
-    if args.set_weather_regulated_charge != None:
+    if set_config.power_limits.enable != None:
+        collected_results["power_limits"] = SetPowerLimits(
+            e3dc, set_config.power_limits
+        )
+    if set_config.powersave != None:
+        collected_results["powersave"] = SetPowerSave(e3dc, set_config.powersave)
+    if set_config.weather_regulated_charge != None:
         collected_results["weather_regulated_charge"] = SetWeatherRegulatedCharge(
-            e3dc, args.set_weather_regulated_charge
+            e3dc, set_config.weather_regulated_charge
         )
 
     if collected_results.keys():

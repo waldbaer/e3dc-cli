@@ -153,27 +153,27 @@ Accumulated Historic Values including production, consumption, battery in/out po
 
     # ---- Setter ----
     argparser.add_argument(
-        "--set_power_limits.enable",
+        "--set.power_limits.enable",
         type=Optional[bool],
         metavar="{true,false}",
         help="True: enable manual SmartPower limits. False: Use automatic mode.",
     )
     argparser.add_argument(
-        "--set_power_limits.max_charge",
+        "--set.power_limits.max_charge",
         type=Optional[int],
         help="""SmartPower maximum charging power. Unit: Watt.
 Only relevant if manual SmartPower limits are enabled.
 """,
     )
     argparser.add_argument(
-        "--set_power_limits.max_discharge",
+        "--set.power_limits.max_discharge",
         type=Optional[int],
         help="""SmartPower maximum discharging power. Unit: Watt.
 Only relevant if manual SmartPower limits are enabled.
 """,
     )
     argparser.add_argument(
-        "--set_power_limits.discharge_start",
+        "--set.power_limits.discharge_start",
         type=Optional[int],
         help="""SmartPower lower charge / discharge threshold. Unit: Watt.
 Only relevant if manual SmartPower limits are enabled.
@@ -181,13 +181,13 @@ Only relevant if manual SmartPower limits are enabled.
     )
 
     argparser.add_argument(
-        "--set_powersave",
+        "--set.powersave",
         type=Optional[bool],
         metavar="{true,false}",
         help="Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use).",
     )
     argparser.add_argument(
-        "--set_weather_regulated_charge",
+        "--set.weather_regulated_charge",
         type=Optional[bool],
         metavar="{true,false}",
         help="Enabled / Disable optimized charging based on the weather forecast.",

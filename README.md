@@ -143,12 +143,14 @@ Create `config.json` containing all parameters:
         "serial_number": "<E3/DC system serial number>"
     },
     "query": ["live", "history_today"],
-    "set_power_limits":{
-      "enable": true,
-      "max_charge": 3500,
-      "max_discharge": 4500
-    },
-    "set_powersave": true
+    "set": {
+      "power_limits":{
+        "enable": true,
+        "max_charge": 3500,
+        "max_discharge": 4500
+      },
+      "powersave": true
+    }
 }
 ```
 
@@ -244,12 +246,15 @@ Extended configuration settings (see [chapter 'configuration' of python-e3dc](ht
 ### All Available Parameters
 Details about all available options:
 ```
-$> ./e3dc-cli.py --help
-Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
+Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS]
+                   [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
                    [--connection.serial_number SERIAL_NUMBER]
                    [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
-                   [--set_power_limits.enable {true,false}] [--set_power_limits.max_charge MAX_CHARGE] [--set_power_limits.max_discharge MAX_DISCHARGE] [--set_power_limits.discharge_start DISCHARGE_START] [--set_powersave {true,false}]
-                   [--set_weather_regulated_charge {true,false}] [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }] [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
+                   [--set.power_limits.enable {true,false}] [--set.power_limits.max_charge MAX_CHARGE]
+                   [--set.power_limits.max_discharge MAX_DISCHARGE] [--set.power_limits.discharge_start DISCHARGE_START]
+                   [--set.powersave {true,false}] [--set.weather_regulated_charge {true,false}]
+                   [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }]
+                   [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
                    [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
 Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
@@ -334,23 +339,23 @@ Options:
                         - history_previous_year     Previous Year
                         - history_total             Since 1970-01-01
                          (type: None, default: None)
-  --set_power_limits.enable {true,false}
+  --set.power_limits.enable {true,false}
                         True: enable manual SmartPower limits. False: Use automatic mode. (type: None, default: None)
-  --set_power_limits.max_charge MAX_CHARGE
+  --set.power_limits.max_charge MAX_CHARGE
                         SmartPower maximum charging power. Unit: Watt.
                         Only relevant if manual SmartPower limits are enabled.
                          (type: None, default: None)
-  --set_power_limits.max_discharge MAX_DISCHARGE
+  --set.power_limits.max_discharge MAX_DISCHARGE
                         SmartPower maximum discharging power. Unit: Watt.
                         Only relevant if manual SmartPower limits are enabled.
                          (type: None, default: None)
-  --set_power_limits.discharge_start DISCHARGE_START
+  --set.power_limits.discharge_start DISCHARGE_START
                         SmartPower lower charge / discharge threshold. Unit: Watt.
                         Only relevant if manual SmartPower limits are enabled.
                          (type: None, default: None)
-  --set_powersave {true,false}
+  --set.powersave {true,false}
                         Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: None, default: None)
-  --set_weather_regulated_charge {true,false}
+  --set.weather_regulated_charge {true,false}
                         Enabled / Disable optimized charging based on the weather forecast. (type: None, default: None)
   --extended_config.powermeters, --extended_config.powermeters+ { EXTENDED POWERMETERS CONFIG HIERARCHY }
                         Extended power meters configuration.
