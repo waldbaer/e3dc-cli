@@ -9,7 +9,7 @@ import traceback
 import json
 
 from lib.argparse import ParseConfig
-from lib.connection import SetupConnectionToE3DC
+from lib.connection import SetupConnectionToE3DC, CloseConnectionToE3DC
 from lib.query import RunMultiQuery
 from lib.setter import (
     SetPowerLimits,
@@ -33,12 +33,14 @@ def Main():
 
     output = {}
 
+    # ---- Main Set & Query Handling
+    RunSetCommands(e3dc, args.set, output)
     if args.query != None:
         RunMultiQuery(e3dc, args.query, output)
-    RunSetCommands(e3dc, args.set, output)
 
-    e3dc.disconnect()
+    CloseConnectionToE3DC(e3dc)
 
+    # ---- Output Results ----
     if args.output != None:
         OutputJsonFile(args.output, output)
     else:

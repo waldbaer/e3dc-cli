@@ -52,3 +52,7 @@ def SetupConnectionToE3DC(connection_config: Dict, extended_config: Dict):
         **params,
     )
     return e3dc
+
+
+def CloseConnectionToE3DC(e3dc: E3DC):
+    e3dc.disconnect()
