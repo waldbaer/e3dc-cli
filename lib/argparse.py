@@ -130,7 +130,10 @@ Only relevant for connection type 'web'.
         nargs="*",
         help="""Perform one or multiple live status or history queries:
 
-Real-Time Status queries:
+Static System Infos:
+- static_system             Static system information (Model, Software Version, Installed PeakPower / BatteryCapacity, ...)
+
+Real-Time Status Queries:
 - live                      Condensed status information (consumption, production, SoC, autarky, ...)
 - live_system               General system status and power settings
 - live_powermeter           Power meter status (power, energy and voltage of L1-L3, ...)
@@ -138,7 +141,7 @@ Real-Time Status queries:
 - live_inverter             Solar inverter status (input strings status, output phases, temperatures)
 - live_wallbox              EV Wallbox status (SoC, consumption, max. charge current, ...)
 
-Accumulated Historic Values including production, consumption, battery in/out power, grid in/out power, autarky
+Accumulated Historic Values (including production, consumption, battery in/out power, grid in/out power, autarky):
 - history_today             Today
 - history_yesterday         Yesterday
 - history_week              Current Week (first day of week: Monday)

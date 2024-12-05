@@ -248,7 +248,7 @@ Details about all available options:
 ```
 Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
                    [--connection.serial_number SERIAL_NUMBER]
-                   [-q [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
+                   [-q [{static_system,live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
                    [--set.power_limits.enable {true,false}] [--set.power_limits.max_charge MAX_CHARGE] [--set.power_limits.max_discharge MAX_DISCHARGE] [--set.power_limits.discharge_start DISCHARGE_START] [--set.powersave {true,false}]
                    [--set.weather_regulated_charge {true,false}] [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }] [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
                    [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
@@ -313,10 +313,13 @@ Options:
                         Serial number of the system (see 'SN' in E3/DC portal).
                         Only relevant for connection type 'web'.
                          (type: None, default: None)
-  -q, --query [{live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
+  -q, --query [{static_system,live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]
                         Perform one or multiple live status or history queries:
 
-                        Real-Time Status queries:
+                        Static System Infos:
+                        - static_system             Static system information (Model, Software Version, Installed PeakPower / BatteryCapacity, ...)
+
+                        Real-Time Status Queries:
                         - live                      Condensed status information (consumption, production, SoC, autarky, ...)
                         - live_system               General system status and power settings
                         - live_powermeter           Power meter status (power, energy and voltage of L1-L3, ...)
@@ -324,7 +327,7 @@ Options:
                         - live_inverter             Solar inverter status (input strings status, output phases, temperatures)
                         - live_wallbox              EV Wallbox status (SoC, consumption, max. charge current, ...)
 
-                        Accumulated Historic Values including production, consumption, battery in/out power, grid in/out power, autarky
+                        Accumulated Historic Values (including production, consumption, battery in/out power, grid in/out power, autarky):
                         - history_today             Today
                         - history_yesterday         Yesterday
                         - history_week              Current Week (first day of week: Monday)

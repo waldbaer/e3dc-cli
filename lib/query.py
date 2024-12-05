@@ -25,6 +25,7 @@ current_timezone = get_localzone()
 
 
 class QueryType(Enum):
+    static_system = "static_system"
     live = "live"
     live_system = "live_system"
     live_powermeter = "live_powermeter"
@@ -64,8 +65,11 @@ def RunQueries(e3dc: E3DC, query_config: Dict, output: Dict):
 def RunQuery(e3dc: E3DC, query):
     result = None
 
+    # ---- Static Queries ----
+    if query.name == QueryType.static_system.name:
+        result = e3dc.get_system_info(keepAlive=KEEP_ALIVE)
     # ---- Live Queries ----
-    if query.name == QueryType.live.name:
+    elif query.name == QueryType.live.name:
         result = e3dc.poll(keepAlive=KEEP_ALIVE)
     elif query.name == QueryType.live_system.name:
         sys_status = e3dc.get_system_status(keepAlive=KEEP_ALIVE)
