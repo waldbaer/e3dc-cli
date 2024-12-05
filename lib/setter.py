@@ -22,7 +22,7 @@ def SetPowerLimits(e3dc: E3DC, power_limits: Dict):
         discharge_start=power_limits.discharge_start,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict(vars(power_limits), e3dc_result)
+    return BuildResultDict(ObjectToDictionary(power_limits), e3dc_result)
 
 
 def SetPowerSave(e3dc: E3DC, powersave: bool):
@@ -55,6 +55,14 @@ def ToHumanResult(result_code: int):
     else:
         human_result = "unknown"
     return human_result
+
+
+def ObjectToDictionary(obj: Any):
+    # Convert object to dictionary representation
+    obj_dictionary = vars(obj)
+    # Filter non attributes
+    result = {k: v for k, v in obj_dictionary.items() if v is not None}
+    return result
 
 
 def BuildResultDict(input_arguments: Dict, result_code):

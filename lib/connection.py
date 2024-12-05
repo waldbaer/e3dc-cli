@@ -7,6 +7,9 @@ from typing import Dict
 # https://github.com/fsantini/python-e3dc
 from e3dc import E3DC
 
+import time
+
+
 # ---- Constants & Types -------------------------------------------------------------------------------------------------------
 
 
@@ -56,3 +59,14 @@ def SetupConnectionToE3DC(connection_config: Dict, extended_config: Dict):
 
 def CloseConnectionToE3DC(e3dc: E3DC):
     e3dc.disconnect()
+
+
+def WaitUntilCommandsApplied(e3dc: E3DC, connection_config: Dict):
+    """
+    In case of local connections the execution of a set command might take some time on the E3/DC system to be applied.
+    The immediate execution of a query command after a set command might not return the just modified system status.
+
+    Therefore an artifical delay is introduced to ensure proper query results executed immediately after any set command.
+    """
+    if connection_config.type.name == ConnectionType.local.name:
+        time.sleep(0.5)  # 500ms

@@ -9,8 +9,12 @@ import traceback
 import json
 
 from lib.argparse import ParseConfig
-from lib.connection import SetupConnectionToE3DC, CloseConnectionToE3DC
-from lib.query import RunMultiQuery
+from lib.connection import (
+    SetupConnectionToE3DC,
+    CloseConnectionToE3DC,
+    WaitUntilCommandsApplied,
+)
+from lib.query import RunQueries
 from lib.setter import (
     SetPowerLimits,
     SetPowerSave,
@@ -34,13 +38,16 @@ def Main():
     output = {}
 
     # ---- Main Set & Query Handling
-    RunSetCommands(e3dc, args.set, output)
-    if args.query != None:
-        RunMultiQuery(e3dc, args.query, output)
+    any_set_command_executed = RunSetCommands(e3dc, args.set, output)
 
+    if args.query != None:
+        if any_set_command_executed:
+            WaitUntilCommandsApplied(e3dc, args.connection)
+        RunQueries(e3dc, args.query, output)
+
+    # ---- Close Connection & Output Results ----
     CloseConnectionToE3DC(e3dc)
 
-    # ---- Output Results ----
     if args.output != None:
         OutputJsonFile(args.output, output)
     else:
@@ -48,6 +55,7 @@ def Main():
 
 
 def RunSetCommands(e3dc, set_config, output):
+    any_setcommand_executed = False
     collected_results = {}
 
     if set_config.power_limits.enable != None:
@@ -63,6 +71,9 @@ def RunSetCommands(e3dc, set_config, output):
 
     if collected_results.keys():
         output["set"] = collected_results
+        any_setcommand_executed = True
+
+    return any_setcommand_executed
 
 
 # ---- Outputs ---------------------------------------------------------------------------------------------------------

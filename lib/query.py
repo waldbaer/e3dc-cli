@@ -48,11 +48,11 @@ class QueryType(Enum):
 # ---- Query Logic -----------------------------------------------------------------------------------------------------
 
 
-def RunMultiQuery(e3dc: E3DC, query_config: Dict, output: Dict):
+def RunQueries(e3dc: E3DC, query_config: Dict, output: Dict):
     # Query requested data
     collected_data = {}
     for query in query_config:
-        single_query_result = RunSingleQuery(e3dc, query)
+        single_query_result = RunQuery(e3dc, query)
 
         if single_query_result is not None:
             collected_data[query.name] = single_query_result
@@ -61,7 +61,7 @@ def RunMultiQuery(e3dc: E3DC, query_config: Dict, output: Dict):
         output["query"] = collected_data
 
 
-def RunSingleQuery(e3dc: E3DC, query):
+def RunQuery(e3dc: E3DC, query):
     result = None
 
     # ---- Live Queries ----

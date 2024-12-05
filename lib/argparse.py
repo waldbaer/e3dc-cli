@@ -156,27 +156,32 @@ Accumulated Historic Values including production, consumption, battery in/out po
         "--set.power_limits.enable",
         type=Optional[bool],
         metavar="{true,false}",
-        help="True: enable manual SmartPower limits. False: Use automatic mode.",
+        help="""true: enable manual SmartPower limits. false: Use automatic mode.
+Automatically set to 'true' if not explicitely set and any other manual limit (max_charge, max_discharge or discharge_start) is set.
+""",
     )
     argparser.add_argument(
         "--set.power_limits.max_charge",
         type=Optional[int],
         help="""SmartPower maximum charging power. Unit: Watt.
-Only relevant if manual SmartPower limits are enabled.
+Automatically set to the systems max. battery charge power limit if not explicitely set.
+Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
 """,
     )
     argparser.add_argument(
         "--set.power_limits.max_discharge",
         type=Optional[int],
         help="""SmartPower maximum discharging power. Unit: Watt.
-Only relevant if manual SmartPower limits are enabled.
+Automatically set to the systems max. battery discharge power limit if not explicitely set.
+Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
 """,
     )
     argparser.add_argument(
         "--set.power_limits.discharge_start",
         type=Optional[int],
         help="""SmartPower lower charge / discharge threshold. Unit: Watt.
-Only relevant if manual SmartPower limits are enabled.
+Automatically set to the systems discharge default threshold if not explicitely set.
+Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
 """,
     )
 
@@ -219,10 +224,24 @@ For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     # ---- Finally parse the inputs  ----
     args = argparser.parse_args()
 
+    # ---- Argument Linking ----
+    LinkArguments(args)
+
     # ---- Post-parse validation ----
     ValidateConfig(args)
 
     return args
+
+
+def LinkArguments(args: Any):
+    # PowerLimits: Enable automatically if any custom charge attribute is set
+    power_limits = args.set.power_limits
+    if (power_limits.enable == None) and (
+        (power_limits.max_charge != None)
+        or (power_limits.max_discharge != None)
+        or (power_limits.discharge_start != None)
+    ):
+        power_limits.enable = True
 
 
 def ValidateConfig(args: Any):
