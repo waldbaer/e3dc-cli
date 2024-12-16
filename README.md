@@ -30,6 +30,9 @@ Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) lib
   * **Power Save**: Enable / Disable PowerSave mode of the inverter
   * **Weather Regulated Charge**: Enable / Disable usage of location-based weather forecast to improve usage of produced energy.
 
+## Changelog
+Changes can be followed at [CHANGELOG.md](/CHANGELOG.md).
+
 ## Requirements ##
 
  - [Python 3.8](https://www.python.org/)
@@ -243,7 +246,7 @@ Extended configuration settings (see [chapter 'configuration' of python-e3dc](ht
 }
 ```
 
-### All Available Parameters
+### All Available Parameters and Configuration Options
 Details about all available options:
 ```
 Usage: e3dc-cli.py [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
