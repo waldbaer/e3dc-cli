@@ -25,7 +25,7 @@ from lib.setter import (
 __author__ = "Sebastian Waldvogel"
 __copyright__ = "Copyright 2022-2024, Sebastian Waldvogel"
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "0.9.0"
 
 
 # ---- Main Logic ------------------------------------------------------------------------------------------------------
