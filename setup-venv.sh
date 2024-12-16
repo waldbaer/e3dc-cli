@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 # -- Config --
-VIRTUALENV_DIR=./venv
+VIRTUALENV_DIR=./.venv
 REQUIREMENTS=./requirements.txt
 
 # -- Execute --

@@ -41,14 +41,14 @@ All further python package dependencies are defined in [requirements.txt](requir
 ```
 # Setup python virtualenv and install all dependencies
 ./setup-venv.h
-source ./venv/bin/activate
+source ./.venv/bin/activate
 ```
 
 Alternative: Manual installation
 ```
 # Setup python virtualenv
-python3 -m venv venv
-source ./venv/bin/activate
+python3 -m venv .venv
+source ./.venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 ```

@@ -3,7 +3,9 @@
 
 # Python virtualenv
 virtualenv
+.virtualenv
 venv
+.venv
 
 # Configuration containing credentials
 config.json
