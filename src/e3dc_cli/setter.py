@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+"""Setter command implementation."""
 
 # ---- Imports ----
-from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from .connection import E3DC
 
@@ -11,10 +10,16 @@ from .connection import E3DC
 KEEP_ALIVE = True
 
 
-# ---- Setter Logic -----------------------------------------------------------------------------------------------------
+# ---- Setter Logic ----------------------------------------------------------------------------------------------------
 
 
-def SetPowerLimits(e3dc: E3DC, power_limits: Dict):
+def SetPowerLimits(e3dc: E3DC, power_limits: Dict) -> None:
+    """Set power limits.
+
+    Arguments:
+        e3dc: The E3/DC library instance for communication with the system.
+        power_limits: The power limits to be set.
+    """
     e3dc_result = e3dc.set_power_limits(
         enable=power_limits.enable,
         max_charge=power_limits.max_charge,
@@ -25,7 +30,13 @@ def SetPowerLimits(e3dc: E3DC, power_limits: Dict):
     return BuildResultDict(ObjectToDictionary(power_limits), e3dc_result)
 
 
-def SetPowerSave(e3dc: E3DC, powersave: bool):
+def SetPowerSave(e3dc: E3DC, powersave: bool) -> None:
+    """Enable/Disable the powersave option.
+
+    Arguments:
+        e3dc: The E3/DC library instance for communication with the system.
+        powersave: New state of the powersave configuration.
+    """
     e3dc_result = e3dc.set_powersave(
         enable=powersave,
         keepAlive=KEEP_ALIVE,
@@ -33,7 +44,13 @@ def SetPowerSave(e3dc: E3DC, powersave: bool):
     return BuildResultDict({"enable": powersave}, e3dc_result)
 
 
-def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool):
+def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool) -> None:
+    """Enable/Disable weather regulated charging option.
+
+    Arguments:
+        e3dc: The E3/DC library instance for communication with the system.
+        weather_regulated_charge: New state of the weather regulated charging option.
+    """
     e3dc_result = e3dc.set_weather_regulated_charge(
         enable=weather_regulated_charge,
         keepAlive=KEEP_ALIVE,
@@ -44,7 +61,15 @@ def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool):
 # ---- Utilities -------------------------------------------------------------------------------------------------------
 
 
-def ToHumanResult(result_code: int):
+def ToHumanResult(result_code: int) -> str:
+    """Convert integer result code to human-readable result.
+
+    Arguments:
+        result_code: Integer result code from E3/DC library.
+
+    Returns:
+        str: Human-readable representation of the result.
+    """
     human_result = "n/a"
     if result_code == 0:
         human_result = "success"
@@ -57,7 +82,15 @@ def ToHumanResult(result_code: int):
     return human_result
 
 
-def ObjectToDictionary(obj: Any):
+def ObjectToDictionary(obj: Any) -> Dict:  # noqa: ANN401
+    """Generic conversion of python objects to dictionaries.
+
+    Arguments:
+        obj: Python object to be converted.
+
+    Returns:
+        Dict: Dictionary representation of the object.
+    """
     # Convert object to dictionary representation
     obj_dictionary = vars(obj)
     # Filter non attributes
@@ -65,7 +98,16 @@ def ObjectToDictionary(obj: Any):
     return result
 
 
-def BuildResultDict(input_arguments: Dict, result_code):
+def BuildResultDict(input_arguments: Dict, result_code: int) -> Dict:
+    """Assemble a dictionary of a single setter command result.
+
+    Arguments:
+        input_arguments: Input arguments used for the setter command.
+        result_code: Integer representation of the result.
+
+    Returns:
+        Dict: Dictionary with input parameters and result in integer / human-readable representation.#
+    """
     return {
         "input_parameters": input_arguments,
         "result": ToHumanResult(result_code),

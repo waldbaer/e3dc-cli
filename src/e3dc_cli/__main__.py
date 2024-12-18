@@ -1,27 +1,16 @@
-#!/usr/bin/env python3
+"""Commandline interface entry point."""
 
 # ---- Imports ----
-from enum import Enum
+import importlib.metadata
 from typing import Dict
 
-import sys
-import traceback
-import json
+from e3dc import E3DC
 
 from .argparse import ParseConfig
-from .connection import (
-    SetupConnectionToE3DC,
-    CloseConnectionToE3DC,
-    WaitUntilCommandsApplied,
-)
+from .connection import CloseConnectionToE3DC, SetupConnectionToE3DC, WaitUntilCommandsApplied
+from .output import OutputJsonFile, OutputJsonStdout
 from .query import RunQueries
-from .setter import (
-    SetPowerLimits,
-    SetPowerSave,
-    SetWeatherRegulatedCharge,
-)
-
-import importlib.metadata
+from .setter import SetPowerLimits, SetPowerSave, SetWeatherRegulatedCharge
 
 # ---- Module Meta-Data ------------------------------------------------------------------------------------------------
 __prog__ = "e3dc-cli"
@@ -34,11 +23,12 @@ __dist_metadata__ = importlib.metadata.metadata("e3dc_cli")
 # ---- Main Logic ------------------------------------------------------------------------------------------------------
 
 
-def cli() -> None:
+def cli() -> None:  # pylint: disable=invalid-name;reason=Required by pdm generated entrypoint script
+    """Main command line handling entry point."""
     args = ParseConfig(
         prog=__prog__,
         version=importlib.metadata.version(__dist_name__),
-        copyright=__copyright__,
+        copy_right=__copyright__,
         author=__author__,
     )
     e3dc = SetupConnectionToE3DC(args.connection, args.extended_config)
@@ -48,31 +38,39 @@ def cli() -> None:
     # ---- Main Set & Query Handling
     any_set_command_executed = RunSetCommands(e3dc, args.set, output)
 
-    if args.query != None:
+    if args.query is not None:
         if any_set_command_executed:
-            WaitUntilCommandsApplied(e3dc, args.connection)
+            WaitUntilCommandsApplied(args.connection)
         RunQueries(e3dc, args.query, output)
 
     # ---- Close Connection & Output Results ----
     CloseConnectionToE3DC(e3dc)
 
-    if args.output != None:
+    if args.output is not None:
         OutputJsonFile(args.output, output)
     else:
         OutputJsonStdout(output)
 
 
-def RunSetCommands(e3dc, set_config, output):
+def RunSetCommands(e3dc: E3DC, set_config: Dict, output: Dict) -> bool:
+    """Run all configured setter commands.
+
+    Arguments:
+        e3dc: The E3/DC library instance for communication with the system.
+        set_config: The configuration of the setter commands.
+        output: The output dictionary filled with the setter command results.
+
+    Returns:
+        bool: True if any setter command was executed. Otherwise False.
+    """
     any_setcommand_executed = False
     collected_results = {}
 
-    if set_config.power_limits.enable != None:
-        collected_results["power_limits"] = SetPowerLimits(
-            e3dc, set_config.power_limits
-        )
-    if set_config.powersave != None:
+    if set_config.power_limits.enable is not None:
+        collected_results["power_limits"] = SetPowerLimits(e3dc, set_config.power_limits)
+    if set_config.powersave is not None:
         collected_results["powersave"] = SetPowerSave(e3dc, set_config.powersave)
-    if set_config.weather_regulated_charge != None:
+    if set_config.weather_regulated_charge is not None:
         collected_results["weather_regulated_charge"] = SetWeatherRegulatedCharge(
             e3dc, set_config.weather_regulated_charge
         )
@@ -82,34 +80,3 @@ def RunSetCommands(e3dc, set_config, output):
         any_setcommand_executed = True
 
     return any_setcommand_executed
-
-
-# ---- Outputs ---------------------------------------------------------------------------------------------------------
-
-
-def OutputJsonStdout(collected_data: Dict):
-    print(json.dumps(collected_data, indent=2, default=str, sort_keys=True))
-
-
-def OutputJsonFile(output_file_path: str, collected_data: Dict):
-    with open(output_file_path, "w", encoding="utf-8") as file:
-        json.dump(collected_data, fp=file, indent=2, default=str, sort_keys=True)
-
-
-# ---- Entrypoint ------------------------------------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    try:
-        cli()
-    except SystemError as e:
-        print(f"ERROR: {e}")
-        sys.exit(1)
-    except SystemExit as exit:
-        sys.exit(exit.code)
-    except BaseException:
-        print(
-            f"ERROR: Any error has occured! Traceback:\r\n{
-          traceback.format_exc()}"
-        )
-        sys.exit(1)
-    sys.exit(0)

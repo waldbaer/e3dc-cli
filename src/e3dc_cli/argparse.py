@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
+"""Argument / Configuration parsing."""
 
 # ---- Imports ----
-from typing import Any, List, Dict, Optional
-from pydantic import SecretStr
+from typing import Any, Dict, List, Optional
 
 from jsonargparse import ArgumentParser, DefaultHelpFormatter
-from rich_argparse import RichHelpFormatter, RawTextRichHelpFormatter
-from rich.markdown import Markdown
+from pydantic import SecretStr
+from rich_argparse import RawTextRichHelpFormatter
 
 from .connection import ConnectionType
 from .query import QueryType
@@ -18,15 +17,25 @@ from .query import QueryType
 
 
 class E3DCCliHelpFormatter(DefaultHelpFormatter, RawTextRichHelpFormatter):
-    # combined DefaultHelpFormatter and RichHelpFormatter
-    pass
+    """Custom CLI help formatter: Combined DefaultHelpFormatter and RichHelpFormatter."""
 
 
-def ParseConfig(prog: str, version: str, copyright: str, author: str):
+def ParseConfig(prog: str, version: str, copy_right: str, author: str) -> Dict:
+    """Parse the configuration from CLI and/or configuration JSON file.
+
+    Arguments:
+        prog: Program name.
+        version: Program version.
+        copy_right: Copyright info.
+        author: Author info.
+
+    Returns:
+        Dict: Parsed configuration options.
+    """
     argparser = ArgumentParser(
         prog=prog,
-        description=f"Query E3/DC solar inverter systems | Version {version} | {copyright}",
-        version=f"| Version {version}\n{copyright} {author}",
+        description=f"Query E3/DC solar inverter systems | Version {version} | {copy_right}",
+        version=f"| Version {version}\n{copy_right} {author}",
         default_config_files=["./config.json"],
         print_config=None,
         env_prefix="E3DC_CLI",
@@ -131,7 +140,7 @@ Only relevant for connection type 'web'.
         help="""Perform one or multiple live status or history queries:
 
 Static System Infos:
-- static_system             Static system information (Model, Software Version, Installed PeakPower / BatteryCapacity, ...)
+- static_system             Static system info (Model, Sofware Version, Installed PeakPower / BatteryCapacity, ...)
 
 Real-Time Status Queries:
 - live                      Condensed status information (consumption, production, SoC, autarky, ...)
@@ -160,7 +169,8 @@ Accumulated Historic Values (including production, consumption, battery in/out p
         type=Optional[bool],
         metavar="{true,false}",
         help="""true: enable manual SmartPower limits. false: Use automatic mode.
-Automatically set to 'true' if not explicitely set and any other manual limit (max_charge, max_discharge or discharge_start) is set.
+Automatically set to 'true' if not explicitely set and any other manual limit
+(max_charge, max_discharge or discharge_start) is set.
 """,
     )
     argparser.add_argument(
@@ -236,32 +246,43 @@ For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     return args
 
 
-def LinkArguments(args: Any):
+def LinkArguments(args: Dict) -> None:
+    """Link Arguments.
+
+    Arguments:
+        args: Parsed configuration options.
+    """
     # PowerLimits: Enable automatically if any custom charge attribute is set
     power_limits = args.set.power_limits
-    if (power_limits.enable == None) and (
-        (power_limits.max_charge != None)
-        or (power_limits.max_discharge != None)
-        or (power_limits.discharge_start != None)
+    if (power_limits.enable is None) and (
+        (power_limits.max_charge is not None)
+        or (power_limits.max_discharge is not None)
+        or (power_limits.discharge_start is not None)
     ):
         power_limits.enable = True
 
 
-def ValidateConfig(args: Any):
+def ValidateConfig(args: Dict) -> None:
+    """Validate the configuration.
+
+    Arguments:
+        args: Parsed configuration options.
+
+    Raises:
+        SystemError: If any validation issue was found.
+    """
     found_config_issues = []
     if args.connection.type == ConnectionType.local:
         if not args.connection.address:
-            found_config_issues.append(
-                f"Connection address config is missing. Required for connection type 'local'."
-            )
+            found_config_issues.append("Connection address config is missing. Required for connection type 'local'.")
         if not args.connection.rscp_password:
             found_config_issues.append(
-                f"Connection RSCP password config is missing. Required for connection type 'local'."
+                "Connection RSCP password config is missing. Required for connection type 'local'."
             )
     if args.connection.type == ConnectionType.web:
         if not args.connection.serial_number:
             found_config_issues.append(
-                f"Connection serial number config is missing. Required for connection type 'web'."
+                "Connection serial number config is missing. Required for connection type 'web'."
             )
 
     if found_config_issues:
