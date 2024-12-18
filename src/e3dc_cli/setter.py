@@ -4,7 +4,7 @@
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from lib.connection import E3DC
+from .connection import E3DC
 
 # ---- Constants & Types -----------------------------------------------------------------------------------------------
 

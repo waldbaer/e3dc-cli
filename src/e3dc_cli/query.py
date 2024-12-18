@@ -4,7 +4,7 @@
 from enum import Enum
 from typing import Dict
 
-from lib.connection import E3DC
+from .connection import E3DC
 
 import datetime
 import time

@@ -8,8 +8,8 @@ from jsonargparse import ArgumentParser, DefaultHelpFormatter
 from rich_argparse import RichHelpFormatter, RawTextRichHelpFormatter
 from rich.markdown import Markdown
 
-from lib.connection import ConnectionType
-from lib.query import QueryType
+from .connection import ConnectionType
+from .query import QueryType
 
 # ---- Constants & Types -----------------------------------------------------------------------------------------------
 
@@ -22,11 +22,11 @@ class E3DCCliHelpFormatter(DefaultHelpFormatter, RawTextRichHelpFormatter):
     pass
 
 
-def ParseConfig(copyright: str, version: str):
+def ParseConfig(prog: str, version: str, copyright: str, author: str):
     argparser = ArgumentParser(
-        prog="e3dc-cli.py",
+        prog=prog,
         description=f"Query E3/DC solar inverter systems | Version {version} | {copyright}",
-        version=f"| Version {version}\n{copyright}",
+        version=f"| Version {version}\n{copyright} {author}",
         default_config_files=["./config.json"],
         print_config=None,
         env_prefix="E3DC_CLI",

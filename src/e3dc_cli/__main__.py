@@ -8,31 +8,39 @@ import sys
 import traceback
 import json
 
-from lib.argparse import ParseConfig
-from lib.connection import (
+from .argparse import ParseConfig
+from .connection import (
     SetupConnectionToE3DC,
     CloseConnectionToE3DC,
     WaitUntilCommandsApplied,
 )
-from lib.query import RunQueries
-from lib.setter import (
+from .query import RunQueries
+from .setter import (
     SetPowerLimits,
     SetPowerSave,
     SetWeatherRegulatedCharge,
 )
 
-# ---- Constants & Types -------------------------------------------------------------------------------------------------------
+import importlib.metadata
+
+# ---- Module Meta-Data ------------------------------------------------------------------------------------------------
+__prog__ = "e3dc-cli"
+__dist_name__ = "e3dc_cli"
+__copyright__ = "Copyright 2022-2024"
 __author__ = "Sebastian Waldvogel"
-__copyright__ = "Copyright 2022-2024, Sebastian Waldvogel"
-__license__ = "MIT"
-__version__ = "0.9.0"
+__dist_metadata__ = importlib.metadata.metadata("e3dc_cli")
 
 
 # ---- Main Logic ------------------------------------------------------------------------------------------------------
 
 
-def Main():
-    args = ParseConfig(copyright=__copyright__, version=__version__)
+def cli() -> None:
+    args = ParseConfig(
+        prog=__prog__,
+        version=importlib.metadata.version(__dist_name__),
+        copyright=__copyright__,
+        author=__author__,
+    )
     e3dc = SetupConnectionToE3DC(args.connection, args.extended_config)
 
     output = {}
@@ -92,7 +100,7 @@ def OutputJsonFile(output_file_path: str, collected_data: Dict):
 
 if __name__ == "__main__":
     try:
-        Main()
+        cli()
     except SystemError as e:
         print(f"ERROR: {e}")
         sys.exit(1)
