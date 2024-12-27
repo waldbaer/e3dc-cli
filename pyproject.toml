@@ -40,6 +40,7 @@ source = "scm"
 lint = "ruff check ."
 format = "ruff format ."
 docs = "mkdocs serve"
+test = "pytest --cov=e3dc_cli"
 
 # ---- Ruff ------------------------------------------------------------------------------------------------------------
 
