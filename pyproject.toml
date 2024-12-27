@@ -77,9 +77,6 @@ convention = "google"
 [tool.pylint]
 load-plugins = ["pylint.extensions.docparams"]
 
-[tool.pylint.basic]
-function-naming-style = "PascalCase"
-
 [tool.pylint.format]
 max-line-length = 120
 

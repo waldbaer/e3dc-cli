@@ -29,7 +29,7 @@ class ConnectionType(Enum):
 # ---- Connection with E3/DC system -----------------------------------------------------------------------------------
 
 
-def SetupConnectionToE3DC(connection_config: Dict, extended_config: Dict) -> E3DC:
+def setup_connection(connection_config: Dict, extended_config: Dict) -> E3DC:
     """Setup connection to the E3/DC system.
 
     Arguments:
@@ -63,7 +63,7 @@ def SetupConnectionToE3DC(connection_config: Dict, extended_config: Dict) -> E3D
     return e3dc
 
 
-def CloseConnectionToE3DC(e3dc: E3DC) -> None:
+def close_connection(e3dc: E3DC) -> None:
     """Close connection to the E3/DC system.
 
     Arguments:
@@ -72,7 +72,7 @@ def CloseConnectionToE3DC(e3dc: E3DC) -> None:
     e3dc.disconnect()
 
 
-def WaitUntilCommandsApplied(connection_config: Dict) -> None:
+def wait_until_commands_applied(connection_config: Dict) -> None:
     """Wait until a command is applied on the E3/DC system.
 
     In case of local connections the execution of a set command might take some time on the E3/DC system to be applied.

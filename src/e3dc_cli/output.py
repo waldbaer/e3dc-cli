@@ -7,7 +7,7 @@ from typing import Dict
 # ---- Outputs ---------------------------------------------------------------------------------------------------------
 
 
-def OutputJsonStdout(collected_data: Dict) -> None:
+def output_json_stdout(collected_data: Dict) -> None:
     """Output as JSON to stdout stream.
 
     Arguments:
@@ -16,7 +16,7 @@ def OutputJsonStdout(collected_data: Dict) -> None:
     print(json.dumps(collected_data, indent=2, default=str, sort_keys=True))
 
 
-def OutputJsonFile(output_file_path: str, collected_data: Dict) -> None:
+def output_json_file(output_file_path: str, collected_data: Dict) -> None:
     """Output as JSON to a file.
 
     Arguments:

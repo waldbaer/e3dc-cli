@@ -20,7 +20,7 @@ class E3DCCliHelpFormatter(DefaultHelpFormatter, RawTextRichHelpFormatter):
     """Custom CLI help formatter: Combined DefaultHelpFormatter and RichHelpFormatter."""
 
 
-def ParseConfig(prog: str, version: str, copy_right: str, author: str) -> Dict:
+def parse_config(prog: str, version: str, copy_right: str, author: str, arg_list: list[str] | None = None) -> Dict:
     """Parse the configuration from CLI and/or configuration JSON file.
 
     Arguments:
@@ -28,6 +28,7 @@ def ParseConfig(prog: str, version: str, copy_right: str, author: str) -> Dict:
         version: Program version.
         copy_right: Copyright info.
         author: Author info.
+        arg_list: Optional command line arguments list.
 
     Returns:
         Dict: Parsed configuration options.
@@ -235,18 +236,18 @@ For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
 
     # ---- Finally parse the inputs  ----
-    args = argparser.parse_args()
+    args = argparser.parse_args(args=arg_list)
 
     # ---- Argument Linking ----
-    LinkArguments(args)
+    link_arguments(args)
 
     # ---- Post-parse validation ----
-    ValidateConfig(args)
+    validate_config(args)
 
     return args
 
 
-def LinkArguments(args: Dict) -> None:
+def link_arguments(args: Dict) -> None:
     """Link Arguments.
 
     Arguments:
@@ -262,7 +263,7 @@ def LinkArguments(args: Dict) -> None:
         power_limits.enable = True
 
 
-def ValidateConfig(args: Dict) -> None:
+def validate_config(args: Dict) -> None:
     """Validate the configuration.
 
     Arguments:

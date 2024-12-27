@@ -57,7 +57,7 @@ class QueryType(Enum):
 # ---- Query Logic -----------------------------------------------------------------------------------------------------
 
 
-def RunQueries(e3dc: E3DC, query_config: Dict, output: Dict) -> None:
+def run_queries(e3dc: E3DC, query_config: Dict, output: Dict) -> None:
     """Execute all configured queries.
 
     Arguments:
@@ -67,7 +67,7 @@ def RunQueries(e3dc: E3DC, query_config: Dict, output: Dict) -> None:
     """
     collected_data = {}
     for query in query_config:
-        single_query_result = RunQuery(e3dc, query)
+        single_query_result = run_query(e3dc, query)
 
         if single_query_result is not None:
             collected_data[query.name] = single_query_result
@@ -76,7 +76,7 @@ def RunQueries(e3dc: E3DC, query_config: Dict, output: Dict) -> None:
         output["query"] = collected_data
 
 
-def RunQuery(e3dc: E3DC, query: Dict) -> Dict:
+def run_query(e3dc: E3DC, query: Dict) -> Dict:
     """Execute a single query.
 
     Arguments:
@@ -105,7 +105,7 @@ def RunQuery(e3dc: E3DC, query: Dict) -> Dict:
         if RSCP_ATTRIB_POWER_SAVE_ENABLED in sys_status:
             del sys_status[RSCP_ATTRIB_POWER_SAVE_ENABLED]
         power_settings = e3dc.get_power_settings(keepAlive=KEEP_ALIVE)
-        result = MergeDictionaries(sys_status, power_settings)
+        result = merge_dictionaries(sys_status, power_settings)
     elif query.name == QueryType.live_powermeter.name:
         result = e3dc.get_powermeter_data(keepAlive=KEEP_ALIVE)
     elif query.name == QueryType.live_battery.name:
@@ -117,27 +117,27 @@ def RunQuery(e3dc: E3DC, query: Dict) -> Dict:
 
     # ---- History Queries ----
     elif query.name == QueryType.history_today.name:
-        result = RunHistoryQueryDay(e3dc, past_days_from_now=0)
+        result = run_history_query_day(e3dc, past_days_from_now=0)
     elif query.name == QueryType.history_yesterday.name:
-        result = RunHistoryQueryDay(e3dc, past_days_from_now=1)
+        result = run_history_query_day(e3dc, past_days_from_now=1)
 
     elif query.name == QueryType.history_week.name:
-        result = RunHistoryQueryWeek(e3dc, past_weeks_from_now=0)
+        result = run_history_query_week(e3dc, past_weeks_from_now=0)
     elif query.name == QueryType.history_previous_week.name:
-        result = RunHistoryQueryWeek(e3dc, past_weeks_from_now=1)
+        result = run_history_query_week(e3dc, past_weeks_from_now=1)
 
     elif query.name == QueryType.history_month.name:
-        result = RunHistoryQueryMonth(e3dc, past_months_from_now=0)
+        result = run_history_query_month(e3dc, past_months_from_now=0)
     elif query.name == QueryType.history_previous_month.name:
-        result = RunHistoryQueryMonth(e3dc, past_months_from_now=1)
+        result = run_history_query_month(e3dc, past_months_from_now=1)
 
     elif query.name == QueryType.history_year.name:
-        result = RunHistoryQueryYear(e3dc, past_years_from_now=0)
+        result = run_history_query_year(e3dc, past_years_from_now=0)
     elif query.name == QueryType.history_previous_year.name:
-        result = RunHistoryQueryYear(e3dc, past_years_from_now=1)
+        result = run_history_query_year(e3dc, past_years_from_now=1)
 
     elif query.name == QueryType.history_total.name:
-        result = RunHistoryQueryTotal(e3dc)
+        result = run_history_query_total(e3dc)
 
     else:
         raise SystemError(f"Unknown/unsupported query type '{query}'")
@@ -148,7 +148,7 @@ def RunQuery(e3dc: E3DC, query: Dict) -> Dict:
 # ---- History Queries -------------------------------------------------------------------------------------------------
 
 
-def RunHistoryQueryDay(e3dc: E3DC, past_days_from_now: int) -> Dict:
+def run_history_query_day(e3dc: E3DC, past_days_from_now: int) -> Dict:
     """Query historic data from the database for the time range 'day'.
 
     Arguments:
@@ -167,14 +167,14 @@ def RunHistoryQueryDay(e3dc: E3DC, past_days_from_now: int) -> Dict:
     # Example: Day history is summarizing all 15min slots starting 23:45 the day before until current day 23:45.
     request_date -= datetime.timedelta(minutes=15)
 
-    return QueryHistoryDatabase(
+    return query_history_database(
         e3dc,
-        start_timestamp=GetStartTimestamp(request_date),
-        timespan_seconds=HoursToSeconds(HOURS_IN_A_DAY),
+        start_timestamp=get_start_timestamp(request_date),
+        timespan_seconds=hours_to_seconds(HOURS_IN_A_DAY),
     )
 
 
-def RunHistoryQueryWeek(e3dc: E3DC, past_weeks_from_now: int) -> Dict:
+def run_history_query_week(e3dc: E3DC, past_weeks_from_now: int) -> Dict:
     """Query historic data from the database for the time range 'week'.
 
     Arguments:
@@ -195,14 +195,14 @@ def RunHistoryQueryWeek(e3dc: E3DC, past_weeks_from_now: int) -> Dict:
     # first day of the week until last day of the week 23:00.
     request_date -= datetime.timedelta(hours=1)
 
-    return QueryHistoryDatabase(
+    return query_history_database(
         e3dc,
-        start_timestamp=GetStartTimestamp(request_date),
-        timespan_seconds=HoursToSeconds(DAYS_IN_A_WEEK * HOURS_IN_A_DAY),
+        start_timestamp=get_start_timestamp(request_date),
+        timespan_seconds=hours_to_seconds(DAYS_IN_A_WEEK * HOURS_IN_A_DAY),
     )
 
 
-def RunHistoryQueryMonth(e3dc: E3DC, past_months_from_now: int = 0) -> Dict:
+def run_history_query_month(e3dc: E3DC, past_months_from_now: int = 0) -> Dict:
     """Query historic data from the database for the time range 'month'.
 
     Arguments:
@@ -218,14 +218,14 @@ def RunHistoryQueryMonth(e3dc: E3DC, past_months_from_now: int = 0) -> Dict:
     # Workaround for https://github.com/fsantini/python-e3dc/issues/67 is not necessary for month-based query
 
     days_in_select_month = monthrange(request_date.year, request_date.month)[1]
-    return QueryHistoryDatabase(
+    return query_history_database(
         e3dc,
-        start_timestamp=GetStartTimestamp(request_date),
-        timespan_seconds=HoursToSeconds(days_in_select_month * HOURS_IN_A_DAY),
+        start_timestamp=get_start_timestamp(request_date),
+        timespan_seconds=hours_to_seconds(days_in_select_month * HOURS_IN_A_DAY),
     )
 
 
-def RunHistoryQueryYear(e3dc: E3DC, past_years_from_now: int = 0) -> Dict:
+def run_history_query_year(e3dc: E3DC, past_years_from_now: int = 0) -> Dict:
     """Query historic data from the database for the time range 'year'.
 
     Arguments:
@@ -241,14 +241,14 @@ def RunHistoryQueryYear(e3dc: E3DC, past_years_from_now: int = 0) -> Dict:
     request_date -= relativedelta(years=past_years_from_now)
 
     # Workaround for https://github.com/fsantini/python-e3dc/issues/67 is not necessary for year-based query
-    return QueryHistoryDatabase(
+    return query_history_database(
         e3dc,
-        start_timestamp=GetStartTimestamp(request_date),
-        timespan_seconds=HoursToSeconds(DAYS_IN_A_YEAR * HOURS_IN_A_DAY),
+        start_timestamp=get_start_timestamp(request_date),
+        timespan_seconds=hours_to_seconds(DAYS_IN_A_YEAR * HOURS_IN_A_DAY),
     )
 
 
-def RunHistoryQueryTotal(e3dc: E3DC) -> Dict:
+def run_history_query_total(e3dc: E3DC) -> Dict:
     """Query historic data from the database for the time range 'total'.
 
     Arguments:
@@ -264,9 +264,9 @@ def RunHistoryQueryTotal(e3dc: E3DC) -> Dict:
     time_delta_since_request_data = now - request_date
     timespan_seconds = int(time_delta_since_request_data.total_seconds())
 
-    return QueryHistoryDatabase(
+    return query_history_database(
         e3dc,
-        start_timestamp=GetStartTimestamp(request_date),
+        start_timestamp=get_start_timestamp(request_date),
         timespan_seconds=timespan_seconds,
     )
 
@@ -274,7 +274,7 @@ def RunHistoryQueryTotal(e3dc: E3DC) -> Dict:
 # ---- Utilities -------------------------------------------------------------------------------------------------------
 
 
-def QueryHistoryDatabase(e3dc: E3DC, start_timestamp: Timestamp, timespan_seconds: int) -> Dict:
+def query_history_database(e3dc: E3DC, start_timestamp: Timestamp, timespan_seconds: int) -> Dict:
     """Query historic data from the database.
 
     Arguments:
@@ -292,7 +292,7 @@ def QueryHistoryDatabase(e3dc: E3DC, start_timestamp: Timestamp, timespan_second
     )
 
 
-def GetStartTimestamp(date_time: datetime) -> int:
+def get_start_timestamp(date_time: datetime) -> int:
     """Get a start timestamp (seconds) from a datetime object.
 
     Arguments:
@@ -308,7 +308,7 @@ def GetStartTimestamp(date_time: datetime) -> int:
     return start_timestamp
 
 
-def MergeDictionaries(*dicts: Dict) -> Dict:
+def merge_dictionaries(*dicts: Dict) -> Dict:
     """Merge multiple dictionaries into a single.
 
     Arguments:
@@ -335,7 +335,7 @@ def MergeDictionaries(*dicts: Dict) -> Dict:
     return merged
 
 
-def HoursToSeconds(hours: int) -> int:
+def hours_to_seconds(hours: int) -> int:
     """Convert hours into seconds.
 
     Arguments:

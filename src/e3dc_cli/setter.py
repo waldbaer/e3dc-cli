@@ -13,7 +13,7 @@ KEEP_ALIVE = True
 # ---- Setter Logic ----------------------------------------------------------------------------------------------------
 
 
-def SetPowerLimits(e3dc: E3DC, power_limits: Dict) -> None:
+def set_power_limits(e3dc: E3DC, power_limits: Dict) -> None:
     """Set power limits.
 
     Arguments:
@@ -27,10 +27,10 @@ def SetPowerLimits(e3dc: E3DC, power_limits: Dict) -> None:
         discharge_start=power_limits.discharge_start,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict(ObjectToDictionary(power_limits), e3dc_result)
+    return build_result_dict(object_to_dictionary(power_limits), e3dc_result)
 
 
-def SetPowerSave(e3dc: E3DC, powersave: bool) -> None:
+def set_power_save(e3dc: E3DC, powersave: bool) -> None:
     """Enable/Disable the powersave option.
 
     Arguments:
@@ -41,10 +41,10 @@ def SetPowerSave(e3dc: E3DC, powersave: bool) -> None:
         enable=powersave,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict({"enable": powersave}, e3dc_result)
+    return build_result_dict({"enable": powersave}, e3dc_result)
 
 
-def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool) -> None:
+def set_weather_regulated_charge(e3dc: E3DC, weather_regulated_charge: bool) -> None:
     """Enable/Disable weather regulated charging option.
 
     Arguments:
@@ -55,13 +55,13 @@ def SetWeatherRegulatedCharge(e3dc: E3DC, weather_regulated_charge: bool) -> Non
         enable=weather_regulated_charge,
         keepAlive=KEEP_ALIVE,
     )
-    return BuildResultDict({"enable": weather_regulated_charge}, e3dc_result)
+    return build_result_dict({"enable": weather_regulated_charge}, e3dc_result)
 
 
 # ---- Utilities -------------------------------------------------------------------------------------------------------
 
 
-def ToHumanResult(result_code: int) -> str:
+def to_human_result(result_code: int) -> str:
     """Convert integer result code to human-readable result.
 
     Arguments:
@@ -82,7 +82,7 @@ def ToHumanResult(result_code: int) -> str:
     return human_result
 
 
-def ObjectToDictionary(obj: Any) -> Dict:  # noqa: ANN401
+def object_to_dictionary(obj: Any) -> Dict:  # noqa: ANN401
     """Generic conversion of python objects to dictionaries.
 
     Arguments:
@@ -98,7 +98,7 @@ def ObjectToDictionary(obj: Any) -> Dict:  # noqa: ANN401
     return result
 
 
-def BuildResultDict(input_arguments: Dict, result_code: int) -> Dict:
+def build_result_dict(input_arguments: Dict, result_code: int) -> Dict:
     """Assemble a dictionary of a single setter command result.
 
     Arguments:
@@ -110,6 +110,6 @@ def BuildResultDict(input_arguments: Dict, result_code: int) -> Dict:
     """
     return {
         "input_parameters": input_arguments,
-        "result": ToHumanResult(result_code),
+        "result": to_human_result(result_code),
         "result_code": result_code,
     }
