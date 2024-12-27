@@ -35,7 +35,7 @@ Changes can be followed at [CHANGELOG.md](/CHANGELOG.md).
 
 ## Requirements ##
 
- - [Python 3.8](https://www.python.org/)
+ - [Python 3.9](https://www.python.org/)
  - [pip (package manager)](https://pip.pypa.io/)
 
 All further python package dependencies are defined in [requirements.txt](requirements.txt).

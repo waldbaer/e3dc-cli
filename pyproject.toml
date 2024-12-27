@@ -6,7 +6,7 @@ authors = [{ name = "Sebastian Waldvogel", email = "sebastian@waldvogels.de" }]
 license = { text = "MIT" }
 readme = "README.md"
 
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "pye3dc==0.9.2",
     "tzlocal==5.2",
@@ -25,7 +25,7 @@ build-backend = "pdm.backend"
 [dependency-groups]
 lint = ["ruff>=0.8.3"]
 pytest = ["pytest-cov>=6.0.0"]
-docs = ["mkdocs>=1.6.1", "mkdocs-material>=9.5.47"]
+docs = ["mkdocs>=1.6.1", "mkdocs-material>=9.5.49"]
 
 
 # ---- Python PDM ------------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ source = "scm"
 
 [tool.pdm.scripts]
 lint = "ruff check ."
-fmt = "ruff format ."
+format = "ruff format ."
 docs = "mkdocs serve"
 
 # ---- Ruff ------------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ select = [
 ]
 extend-select = ["DOC"]
 preview = true
-ignore = []
+ignore = ["UP006", "UP035"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["PLC2701"]
