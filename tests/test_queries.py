@@ -1,10 +1,12 @@
 """Test of query commands."""
 
+from typing import Optional
+
 import pytest
 
 from e3dc_cli.connection import ConnectionType
 from e3dc_cli.query import QueryType, merge_dictionaries, run_query
-from tests.util_runner import run_cli, run_cli_stdout
+from tests.util_runner import run_cli, run_cli_json, run_cli_stdout
 
 # ---- Constants -------------------------------------------------------------------------------------------------------
 JSON_KEY_QUERY = "query"
@@ -214,17 +216,26 @@ def test_ct_query_single(
 
 
 @pytest.mark.parametrize("connection_type", [ConnectionType.local, ConnectionType.web])
-def test_ct_query_multi(connection_type: ConnectionType, capsys: pytest.CaptureFixture[str]) -> None:
+@pytest.mark.parametrize("output_path", [None, "/tmp/e3dc_cli_test.json"])
+def test_ct_query_multi(
+    connection_type: ConnectionType, output_path: Optional[str], capsys: pytest.CaptureFixture[str]
+) -> None:
     """Test the --query option for multiple queries.
 
     Arguments:
         connection_type: Used connection type.
+        output_path: Path of JSON output file. If not set JSON output is written to console / stdout.
         capsys: System capture
     """
     all_query_types = [str(query_type) for query_type in QueryType]
     connection_type = str(connection_type)
 
-    json_output = run_cli_stdout(f"--connection.type {connection_type} --query {' '.join(all_query_types)}", capsys)
+    cli_args = f"--connection.type {connection_type} --query {' '.join(all_query_types)}"
+    if output_path is None:
+        json_output = run_cli_stdout(cli_args, capsys)
+    else:
+        cli_args += f" --output {output_path}"
+        json_output = run_cli_json(cli_args, output_path, capsys)
 
     assert JSON_KEY_QUERY in json_output
     json_query = json_output[JSON_KEY_QUERY]
