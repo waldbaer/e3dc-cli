@@ -1,7 +1,4 @@
-"""Test for __main__.
-
-Docs: https://pythontest.com/testing-argparse-apps/
-"""
+"""Test of general commands."""
 
 import importlib
 
