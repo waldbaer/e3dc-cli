@@ -140,7 +140,7 @@ def run_query(e3dc: E3DC, query: Dict) -> Dict:
         result = run_history_query_total(e3dc)
 
     else:
-        raise SystemError(f"Unknown/unsupported query type '{query}'")
+        raise SystemError(f"Unknown/unsupported query type '{query.name}'")
 
     return result
 
@@ -327,7 +327,7 @@ def merge_dictionaries(*dicts: Dict) -> Dict:
                 value_of_merged = merged[key]
                 if value != value_of_merged:
                     raise ValueError(
-                        f"Failed to merge dictionaries."
+                        f"Failed to merge dictionaries. "
                         f"Detected duplicate key '{key}' with different values: {
                   value} <-> {value_of_merged}"
                     )
