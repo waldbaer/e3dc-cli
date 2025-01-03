@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/e3dc-cli.svg)](https://badge.fury.io/py/e3dc-cli)
 [![MIT License](https://img.shields.io/github/license/waldbaer/e3dc-cli?style=flat-square)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/waldbaer/e3dc-cli?style=flat-square)](https://github.com/waldbaer/e3dc-cli/issues)
 
@@ -36,19 +37,20 @@ Changes can be followed at [CHANGELOG.md](/CHANGELOG.md).
 ## Requirements ##
 
  - [Python 3.9](https://www.python.org/)
- - [pip (package manager)](https://pip.pypa.io/)
+ - [pip](https://pip.pypa.io/) or [pipx](https://pipx.pypa.io/stable/)
 
  For development:
  - [python-pdm (package dependency manager)](https://pdm-project.org/)
 
 ## Setup
 
-# Via pip
+### With pip / pipx
 ```
 pip install e3dc-cli
+pipx install e3dc-cli
 ```
 
-# Setup directly from github repo / clone
+### Setup directly from github repo / clone
 ```
 pdm install
 source ./.venv/bin/activate
@@ -400,8 +402,6 @@ pdm run tests
 ```
 
 ### Publish
-
-to pypi.org
 
 ```
 # API token will be requested interactively as password
