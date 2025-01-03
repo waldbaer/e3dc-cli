@@ -38,22 +38,20 @@ Changes can be followed at [CHANGELOG.md](/CHANGELOG.md).
  - [Python 3.9](https://www.python.org/)
  - [pip (package manager)](https://pip.pypa.io/)
 
-All further python package dependencies are defined in [requirements.txt](requirements.txt).
+ For development:
+ - [python-pdm (package dependency manager)](https://pdm-project.org/)
 
 ## Setup
+
+# Via pip
 ```
-# Setup python virtualenv and install all dependencies
-./setup-venv.h
-source ./.venv/bin/activate
+pip install e3dc-cli
 ```
 
-Alternative: Manual installation
+# Setup directly from github repo / clone
 ```
-# Setup python virtualenv
-python3 -m venv .venv
+pdm install
 source ./.venv/bin/activate
-# Install dependencies
-pip install -r requirements.txt
 ```
 
 ## Usage
@@ -68,7 +66,7 @@ The results of all executed queries and configuration modifications are returned
 This output can be displayed directly in the terminal or saved to a JSON file.
 It includes structured JSON hierarchies for each executed query and configuration modification.
 
-The machine-readable JSON output format is designed for seamless integration with automation platforms, such as [Node-RED](https://nodered.org/), which typically execute the e3dc-cli.py tool.
+The machine-readable JSON output format is designed for seamless integration with automation platforms, such as [Node-RED](https://nodered.org/), which typically execute the `e3dc-cli` tool.
 
 ### Examples
 
@@ -89,7 +87,7 @@ Store all connection and credential parameters in JSON configuration file called
 
 Run some concrete queries and modify the PowerSave system configuration:
 ```
-$> ./e3dc-cli.py --query live history_today --set_powersave true
+$> e3dc-cli --query live history_today --set_powersave true
 {
   "query": {
     "live": {
@@ -159,7 +157,7 @@ Create `config.json` containing all parameters:
 
 Run tool without any further command line argument:
 ```
-$> ./e3dc-cli.py
+$> e3dc-cli
 {
   "query": {
     "history_today": {
@@ -249,16 +247,18 @@ Extended configuration settings (see [chapter 'configuration' of python-e3dc](ht
 ### All Available Parameters and Configuration Options
 Details about all available options:
 ```
-Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER]
-                [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
+Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}]
+                [--connection.address ADDRESS] [--connection.user USER] [--connection.password PASSWORD]
+                [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
                 [-q [{static_system,live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
-                [--set.power_limits.enable {true,false}] [--set.power_limits.max_charge MAX_CHARGE] [--set.power_limits.max_discharge MAX_DISCHARGE]
-                [--set.power_limits.discharge_start DISCHARGE_START] [--set.powersave {true,false}] [--set.weather_regulated_charge {true,false}]
+                [--set.power_limits.enable {true,false}] [--set.power_limits.max_charge MAX_CHARGE]
+                [--set.power_limits.max_discharge MAX_DISCHARGE] [--set.power_limits.discharge_start DISCHARGE_START]
+                [--set.powersave {true,false}] [--set.weather_regulated_charge {true,false}]
                 [--extended_config.powermeters { EXTENDED POWERMETERS CONFIG HIERARCHY }]
                 [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
                 [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
-Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024, Sebastian Waldvogel
+Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024
 
 Default Config File Locations:
   ['./config.json'], Note: default values below are the ones overridden by the contents of: ./config.json
@@ -345,7 +345,8 @@ Options:
                          (type: None, default: None)
   --set.power_limits.enable {true,false}
                         true: enable manual SmartPower limits. false: Use automatic mode.
-                        Automatically set to 'true' if not explicitely set and any other manual limit (max_charge, max_discharge or discharge_start) is set.
+                        Automatically set to 'true' if not explicitely set and any other manual limit
+                        (max_charge, max_discharge or discharge_start) is set.
                          (type: None, default: None)
   --set.power_limits.max_charge MAX_CHARGE
                         SmartPower maximum charging power. Unit: Watt.
@@ -375,6 +376,39 @@ Options:
   --extended_config.batteries, --extended_config.batteries+ { EXTENDED BATTERIES CONFIG HIERARCHY }
                         Extended batteries configuration.
                         For details see https://python-e3dc.readthedocs.io/en/latest/#configuration (type: None, default: None)
+```
+
+## Development
+
+### Setup environment
+
+```
+pdm install --dev
+```
+
+### Format / Linter / Tests
+
+```
+# Check code style
+pdm run format
+
+# Check linter
+pdm run lint
+
+# Run tests
+pdm run tests
+```
+
+### Publish
+
+to pypi.org
+
+```
+# API token will be requested interactively as password
+pdm publish -u __token__
+
+# or to test.pypi.org
+pdm publish --repository testpypi -u __token__
 ```
 
 ## Acknowledgments
