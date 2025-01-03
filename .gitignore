@@ -4,6 +4,9 @@
 # Configuration containing credentials
 config.json
 
+# git
+*.orig
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

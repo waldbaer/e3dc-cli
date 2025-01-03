@@ -87,7 +87,7 @@ def run_query(e3dc: E3DC, query: Dict) -> Dict:
         Dict: Dictionary with the query results.
 
     Raises:
-        SystemError: If an unknown/unsupported query is requested.
+        ValueError: If an unknown/unsupported query is requested.
     """
     result = None
 
@@ -140,7 +140,7 @@ def run_query(e3dc: E3DC, query: Dict) -> Dict:
         result = run_history_query_total(e3dc)
 
     else:
-        raise SystemError(f"Unknown/unsupported query type '{query.name}'")
+        raise ValueError(f"Unknown/unsupported query type '{query.name}'")
 
     return result
 

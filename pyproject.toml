@@ -40,7 +40,7 @@ source = "scm"
 lint = "ruff check ."
 format = "ruff format ."
 docs = "mkdocs serve"
-tests = "pytest --cov-report term-missing --cov=e3dc_cli --verbose"
+tests = "pytest --cov-report term-missing --cov=e3dc_cli --cov-fail-under=100 --verbose"
 
 # ---- Ruff ------------------------------------------------------------------------------------------------------------
 

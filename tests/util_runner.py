@@ -44,12 +44,15 @@ def run_cli_json(cli_args: str, output_path: str, capsys: pytest.CaptureFixture)
     return parsed_json
 
 
-def run_cli(cli_args: str, capsys: pytest.CaptureFixture) -> None:
+def run_cli(cli_args: str, capsys: pytest.CaptureFixture) -> str:
     """Run the command line util with the passed arguments.
 
     Arguments:
         cli_args: The command line arguments string passed.
         capsys: System capture
+
+    Returns:
+        str: Captured stdout
     """
     cli(shlex.split(cli_args))
     return capsys.readouterr().out.rstrip()

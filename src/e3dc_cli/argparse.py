@@ -270,21 +270,21 @@ def validate_config(args: Dict) -> None:
         args: Parsed configuration options.
 
     Raises:
-        SystemError: If any validation issue was found.
+        ValueError: If any validation issue was found.
     """
     found_config_issues = []
     if args.connection.type == ConnectionType.local:
         if not args.connection.address:
             found_config_issues.append("Connection address config is missing. Required for connection type 'local'.")
-        if not args.connection.rscp_password:
+        if not args.connection.rscp_password.get_secret_value():
             found_config_issues.append(
                 "Connection RSCP password config is missing. Required for connection type 'local'."
             )
     if args.connection.type == ConnectionType.web:
-        if not args.connection.serial_number:
+        if not args.connection.serial_number.get_secret_value():
             found_config_issues.append(
                 "Connection serial number config is missing. Required for connection type 'web'."
             )
 
     if found_config_issues:
-        raise SystemError("\n".join(found_config_issues))
+        raise ValueError("\n".join(found_config_issues))

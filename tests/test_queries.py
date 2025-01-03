@@ -216,26 +216,28 @@ def test_ct_query_single(
 
 
 @pytest.mark.parametrize("connection_type", [ConnectionType.local, ConnectionType.web])
-@pytest.mark.parametrize("output_path", [None, "/tmp/e3dc_cli_test.json"])
+@pytest.mark.parametrize("output_file", [None, "e3dc_cli_test.json"])
 def test_ct_query_multi(
-    connection_type: ConnectionType, output_path: Optional[str], capsys: pytest.CaptureFixture[str]
+    connection_type: ConnectionType, output_file: Optional[str], tmp_path: str, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """Test the --query option for multiple queries.
 
     Arguments:
         connection_type: Used connection type.
-        output_path: Path of JSON output file. If not set JSON output is written to console / stdout.
+        output_file: JSON output file name. If not set JSON output is written to console / stdout.
+        tmp_path: Temporary unique file path provided by built-in fixture.
         capsys: System capture
     """
     all_query_types = [str(query_type) for query_type in QueryType]
     connection_type = str(connection_type)
 
     cli_args = f"--connection.type {connection_type} --query {' '.join(all_query_types)}"
-    if output_path is None:
+    if output_file is None:
         json_output = run_cli_stdout(cli_args, capsys)
     else:
-        cli_args += f" --output {output_path}"
-        json_output = run_cli_json(cli_args, output_path, capsys)
+        output_file = f"{tmp_path}/{output_file}"
+        cli_args += f" --output {output_file}"
+        json_output = run_cli_json(cli_args, output_file, capsys)
 
     assert JSON_KEY_QUERY in json_output
     json_query = json_output[JSON_KEY_QUERY]
@@ -271,7 +273,7 @@ def test_ut_query_type_unknown() -> None:
 
         name = "UNKNOWN_QUERY"
 
-    with pytest.raises(SystemError) as exception_info:
+    with pytest.raises(ValueError) as exception_info:
         run_query(None, InvalidQueryConfig)
 
     assert f"Unknown/unsupported query type '{InvalidQueryConfig.name}'" in str(exception_info.value)
