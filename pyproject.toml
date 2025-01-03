@@ -27,6 +27,8 @@ lint = ["ruff>=0.8.3"]
 pytest = ["pytest-cov>=6.0.0"]
 docs = ["mkdocs>=1.6.1", "mkdocs-material>=9.5.49"]
 
+[project.urls]
+Repository = "https://github.com/waldbaer/e3dc-cli"
 
 # ---- Python PDM ------------------------------------------------------------------------------------------------------
 
