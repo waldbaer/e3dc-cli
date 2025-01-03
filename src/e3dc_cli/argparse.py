@@ -276,12 +276,13 @@ def validate_config(args: Dict) -> None:
     if args.connection.type == ConnectionType.local:
         if not args.connection.address:
             found_config_issues.append("Connection address config is missing. Required for connection type 'local'.")
-        if not args.connection.rscp_password.get_secret_value():
+        if not args.connection.rscp_password:
             found_config_issues.append(
                 "Connection RSCP password config is missing. Required for connection type 'local'."
             )
+
     if args.connection.type == ConnectionType.web:
-        if not args.connection.serial_number.get_secret_value():
+        if not args.connection.serial_number:
             found_config_issues.append(
                 "Connection serial number config is missing. Required for connection type 'web'."
             )

@@ -1,12 +1,11 @@
 """Test of general commands."""
 
 import importlib
-import json
 
 import pytest
 
 from e3dc_cli.__main__ import __dist_name__, __prog__
-from tests.util_runner import run_cli, run_cli_stdout
+from tests.util_runner import DefaultConfigJsonTemporaryRename, run_cli
 
 # ---- Testcases -------------------------------------------------------------------------------------------------------
 
@@ -50,14 +49,15 @@ def test_ct_invalid_connection_config(capsys: pytest.CaptureFixture[str]) -> Non
     Arguments:
         capsys: System capture
     """
-    with pytest.raises(ValueError) as value_error:
-        run_cli("--connection.type local --connection.address null", capsys)
-    assert "Connection address config is missing" in str(value_error.value)
+    with DefaultConfigJsonTemporaryRename("config.json", "config.json.tmp"):
+        with pytest.raises(ValueError) as value_error:
+            run_cli("--connection.type local --connection.rscp_password dummy_password", capsys)
+        assert "Connection address config is missing" in str(value_error.value)
 
-    with pytest.raises(ValueError) as value_error:
-        run_cli("--connection.type local --connection.address 192.168.0.1 --connection.rscp_password null", capsys)
-    assert "Connection RSCP password config is missing" in str(value_error.value)
+        with pytest.raises(ValueError) as value_error:
+            run_cli("--connection.type local --connection.address 1.2.3.4", capsys)
+        assert "Connection RSCP password config is missing" in str(value_error.value)
 
-    with pytest.raises(ValueError) as value_error:
-        run_cli("--connection.type web --connection.serial_number null", capsys)
-    assert "Connection serial number config is missing" in str(value_error.value)
+        with pytest.raises(ValueError) as value_error:
+            run_cli("--connection.type web", capsys)
+        assert "Connection serial number config is missing" in str(value_error.value)
