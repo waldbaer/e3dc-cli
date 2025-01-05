@@ -32,7 +32,7 @@ Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) lib
   * **Weather Regulated Charge**: Enable / Disable usage of location-based weather forecast to improve usage of produced energy.
 
 ## Changelog
-Changes can be followed at [CHANGELOG.md](/CHANGELOG.md).
+Changes can be followed at [CHANGELOG.md](https://github.com/waldbaer/e3dc-cli/blob/master/CHANGELOG.md).
 
 ## Requirements ##
 
