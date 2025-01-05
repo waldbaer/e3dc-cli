@@ -3,7 +3,7 @@
 [![GitHub issues open](https://img.shields.io/github/issues/waldbaer/e3dc-cli?style=flat-square)](https://github.com/waldbaer/e3dc-cli/issues)
 
 
-# Command-line tool to query E3/DC systems
+# Command line tool for querying E3/DC solar inverter systems
 
 ## Introduction
 This command-line tool allows users to query live and historical data from E3/DC solar inverters and perform configuration changes. It leverages the excellent [python-e3dc](https://github.com/fsantini/python-e3dc) library for seamless integration with E3/DC systems.
