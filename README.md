@@ -1,6 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/e3dc-cli.svg)](https://badge.fury.io/py/e3dc-cli)
 [![MIT License](https://img.shields.io/github/license/waldbaer/e3dc-cli?style=flat-square)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/waldbaer/e3dc-cli?style=flat-square)](https://github.com/waldbaer/e3dc-cli/issues)
+[![GitHub Actions](https://github.com/waldbaer/e3dc-cli/actions/workflows/python-pdm.yml/badge.svg?branch=master)](https://github.com/waldbaer/e3dc-cli/actions/workflows/python-pdm.yml)
 
 
 # Command line tool for querying E3/DC solar inverter systems
