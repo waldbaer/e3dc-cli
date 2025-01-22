@@ -33,7 +33,7 @@ def parse_config(prog: str, version: str, copy_right: str, author: str, arg_list
     Returns:
         Dict: Parsed configuration options.
     """
-    argparser = ArgumentParser(
+    arg_parser = ArgumentParser(
         prog=prog,
         description=f"Query E3/DC solar inverter systems | Version {version} | {copy_right}",
         version=f"| Version {version}\n{copy_right} {author}",
@@ -45,7 +45,7 @@ def parse_config(prog: str, version: str, copy_right: str, author: str, arg_list
     )
 
     # JSON config file
-    argparser.add_argument(
+    arg_parser.add_argument(
         "-c",
         "--config",
         action="config",
@@ -82,7 +82,7 @@ Example:
     )
 
     # JSON output file
-    argparser.add_argument(
+    arg_parser.add_argument(
         "-o",
         "--output",
         type=Optional[str],
@@ -90,7 +90,7 @@ Example:
     )
 
     # Connection config
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.type",
         type=ConnectionType,
         help="""Connection type used for communication with the E3/DC system
@@ -100,31 +100,31 @@ web    Use web connection
 """,
         default=ConnectionType.local,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.address",
         type=Optional[str],
         help="""IP or DNS address of the E3/DC system.
 Only relevant for connection type 'local'.
 """,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.user",
         type=SecretStr,
         help="Username (similar to the E3/DC portal)",
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.password",
         type=SecretStr,
         help="Password (similar to the E3/DC portal)",
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.rscp_password",
         type=Optional[SecretStr],
         help="""RSCP password. Set on the device via Main Page -> Personalize -> User profile -> RSCP password.
 Only relevant for connection type 'local',
 """,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--connection.serial_number",
         type=Optional[SecretStr],
         help="""Serial number of the system (see 'SN' in E3/DC portal).
@@ -133,7 +133,7 @@ Only relevant for connection type 'web'.
     )
 
     # ---- Queries ----
-    argparser.add_argument(
+    arg_parser.add_argument(
         "-q",
         "--query",
         type=QueryType,
@@ -141,7 +141,7 @@ Only relevant for connection type 'web'.
         help="""Perform one or multiple live status or history queries:
 
 Static System Infos:
-- static_system             Static system info (Model, Sofware Version, Installed PeakPower / BatteryCapacity, ...)
+- static_system             Static system info (Model, Software Version, Installed PeakPower / BatteryCapacity, ...)
 
 Real-Time Status Queries:
 - live                      Condensed status information (consumption, production, SoC, autarky, ...)
@@ -149,7 +149,7 @@ Real-Time Status Queries:
 - live_powermeter           Power meter status (power, energy and voltage of L1-L3, ...)
 - live_battery              Battery status (SoC, temperatures, capacity, charge cycles, ...)
 - live_inverter             Solar inverter status (input strings status, output phases, temperatures)
-- live_wallbox              EV Wallbox status (SoC, consumption, max. charge current, ...)
+- live_wallbox              EV wallbox status (SoC, consumption, max. charge current, ...)
 
 Accumulated Historic Values (including production, consumption, battery in/out power, grid in/out power, autarky):
 - history_today             Today
@@ -165,47 +165,47 @@ Accumulated Historic Values (including production, consumption, battery in/out p
     )
 
     # ---- Setter ----
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.power_limits.enable",
         type=Optional[bool],
         metavar="{true,false}",
         help="""true: enable manual SmartPower limits. false: Use automatic mode.
-Automatically set to 'true' if not explicitely set and any other manual limit
+Automatically set to 'true' if not explicitly set and any other manual limit
 (max_charge, max_discharge or discharge_start) is set.
 """,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.power_limits.max_charge",
         type=Optional[int],
         help="""SmartPower maximum charging power. Unit: Watt.
-Automatically set to the systems max. battery charge power limit if not explicitely set.
-Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+Automatically set to the systems max. battery charge power limit if not explicitly set.
+Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
 """,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.power_limits.max_discharge",
         type=Optional[int],
         help="""SmartPower maximum discharging power. Unit: Watt.
-Automatically set to the systems max. battery discharge power limit if not explicitely set.
-Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+Automatically set to the systems max. battery discharge power limit if not explicitly set.
+Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
 """,
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.power_limits.discharge_start",
         type=Optional[int],
         help="""SmartPower lower charge / discharge threshold. Unit: Watt.
-Automatically set to the systems discharge default threshold if not explicitely set.
-Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+Automatically set to the systems discharge default threshold if not explicitly set.
+Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
 """,
     )
 
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.powersave",
         type=Optional[bool],
         metavar="{true,false}",
         help="Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use).",
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--set.weather_regulated_charge",
         type=Optional[bool],
         metavar="{true,false}",
@@ -213,21 +213,21 @@ Only relevant if set.power_limits.enable is 'true' or not explicitely configured
     )
 
     # ---- Advanced config of devices enumeration etc. ---
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--extended_config.powermeters",
         metavar="{ EXTENDED POWERMETERS CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
         help="""Extended power meters configuration.
 For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--extended_config.pvis",
         metavar="{ EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
         help="""Extended solar inverters configuration.
 For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
-    argparser.add_argument(
+    arg_parser.add_argument(
         "--extended_config.batteries",
         metavar="{ EXTENDED BATTERIES CONFIG HIERARCHY }",
         type=List[Dict[str, Any]],
@@ -236,7 +236,7 @@ For details see https://python-e3dc.readthedocs.io/en/latest/#configuration""",
     )
 
     # ---- Finally parse the inputs  ----
-    args = argparser.parse_args(args=arg_list)
+    args = arg_parser.parse_args(args=arg_list)
 
     # ---- Argument Linking ----
     link_arguments(args)

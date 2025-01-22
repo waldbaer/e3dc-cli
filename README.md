@@ -7,9 +7,12 @@
 # Command line tool for querying E3/DC solar inverter systems
 
 ## Introduction
-This command-line tool allows users to query live and historical data from E3/DC solar inverters and perform configuration changes. It leverages the excellent [python-e3dc](https://github.com/fsantini/python-e3dc) library for seamless integration with E3/DC systems.
+This command-line tool allows users to query live and historical data from E3/DC solar inverters and perform
+configuration changes. It leverages the excellent [python-e3dc](https://github.com/fsantini/python-e3dc) library for
+seamless integration with E3/DC systems.
 
-Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) library, this tool supports configuration and control via command-line parameters or a JSON configuration file.
+Leveraging the powerful [jsonargparse](https://jsonargparse.readthedocs.io/) library, this tool supports configuration
+and control via command-line parameters or a JSON configuration file.
 
 ## Features
 
@@ -59,17 +62,20 @@ source ./.venv/bin/activate
 
 ## Usage
 
-All parameters can be provided either as command-line arguments or through a JSON configuration file (default: `config.json`).
-A combination of both methods is also supported.
+All parameters can be provided either as command-line arguments or through a JSON configuration file
+(default: `config.json`). A combination of both methods is also supported.
 
-A common approach is to define all credentials in the JSON configuration file, while specifying specific queries or set operations as command-line arguments.
-Alternatively, you can define all credentials via command-line parameters or include the executed queries and set operations directly in the JSON configuration file.
+A common approach is to define all credentials in the JSON configuration file, while specifying specific queries or set
+operations as command-line arguments.
+Alternatively, you can define all credentials via command-line parameters or include the executed queries and set
+operations directly in the JSON configuration file.
 
 The results of all executed queries and configuration modifications are returned as JSON output.
 This output can be displayed directly in the terminal or saved to a JSON file.
 It includes structured JSON hierarchies for each executed query and configuration modification.
 
-The machine-readable JSON output format is designed for seamless integration with automation platforms, such as [Node-RED](https://nodered.org/), which typically execute the `e3dc-cli` tool.
+The machine-readable JSON output format is designed for seamless integration with automation platforms, such as
+[Node-RED](https://nodered.org/), which typically execute the `e3dc-cli` tool.
 
 ### Examples
 
@@ -325,7 +331,7 @@ Options:
                         Perform one or multiple live status or history queries:
 
                         Static System Infos:
-                        - static_system             Static system info (Model, Sofware Version, Installed PeakPower / BatteryCapacity, ...)
+                        - static_system             Static system info (Model, Software Version, Installed PeakPower / BatteryCapacity, ...)
 
                         Real-Time Status Queries:
                         - live                      Condensed status information (consumption, production, SoC, autarky, ...)
@@ -333,7 +339,7 @@ Options:
                         - live_powermeter           Power meter status (power, energy and voltage of L1-L3, ...)
                         - live_battery              Battery status (SoC, temperatures, capacity, charge cycles, ...)
                         - live_inverter             Solar inverter status (input strings status, output phases, temperatures)
-                        - live_wallbox              EV Wallbox status (SoC, consumption, max. charge current, ...)
+                        - live_wallbox              EV wallbox status (SoC, consumption, max. charge current, ...)
 
                         Accumulated Historic Values (including production, consumption, battery in/out power, grid in/out power, autarky):
                         - history_today             Today
@@ -348,23 +354,23 @@ Options:
                          (type: None, default: None)
   --set.power_limits.enable {true,false}
                         true: enable manual SmartPower limits. false: Use automatic mode.
-                        Automatically set to 'true' if not explicitely set and any other manual limit
+                        Automatically set to 'true' if not explicitly set and any other manual limit
                         (max_charge, max_discharge or discharge_start) is set.
                          (type: None, default: None)
   --set.power_limits.max_charge MAX_CHARGE
                         SmartPower maximum charging power. Unit: Watt.
-                        Automatically set to the systems max. battery charge power limit if not explicitely set.
-                        Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+                        Automatically set to the systems max. battery charge power limit if not explicitly set.
+                        Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
                          (type: None, default: None)
   --set.power_limits.max_discharge MAX_DISCHARGE
                         SmartPower maximum discharging power. Unit: Watt.
-                        Automatically set to the systems max. battery discharge power limit if not explicitely set.
-                        Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+                        Automatically set to the systems max. battery discharge power limit if not explicitly set.
+                        Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
                          (type: None, default: None)
   --set.power_limits.discharge_start DISCHARGE_START
                         SmartPower lower charge / discharge threshold. Unit: Watt.
-                        Automatically set to the systems discharge default threshold if not explicitely set.
-                        Only relevant if set.power_limits.enable is 'true' or not explicitely configured.
+                        Automatically set to the systems discharge default threshold if not explicitly set.
+                        Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
                          (type: None, default: None)
   --set.powersave {true,false}
                         Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use). (type: None, default: None)
