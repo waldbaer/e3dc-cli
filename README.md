@@ -56,8 +56,12 @@ pipx install e3dc-cli
 
 ### Setup directly from github repo / clone
 ```
-pdm install
+git clone https://github.com/waldbaer/e3dc-cli.git
+cd e3dc-cli
+
+python -m venv .venv
 source ./.venv/bin/activate
+pip install .
 ```
 
 ## Usage
