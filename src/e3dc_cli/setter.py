@@ -13,7 +13,37 @@ KEEP_ALIVE = True
 # ---- Setter Logic ----------------------------------------------------------------------------------------------------
 
 
-def set_power_limits(e3dc: E3DC, power_limits: Dict) -> None:
+def run_set_commands(e3dc: E3DC, set_config: Dict, output: Dict) -> bool:
+    """Run all configured setter commands.
+
+    Arguments:
+        e3dc: The E3/DC library instance for communication with the system.
+        set_config: The configuration of the setter commands.
+        output: The output dictionary filled with the setter command results.
+
+    Returns:
+        bool: True if any setter command was executed. Otherwise False.
+    """
+    any_setcommand_executed = False
+    collected_results = {}
+
+    if set_config.power_limits.enable is not None:
+        collected_results["power_limits"] = _set_power_limits(e3dc, set_config.power_limits)
+    if set_config.powersave is not None:
+        collected_results["powersave"] = _set_power_save(e3dc, set_config.powersave)
+    if set_config.weather_regulated_charge is not None:
+        collected_results["weather_regulated_charge"] = _set_weather_regulated_charge(
+            e3dc, set_config.weather_regulated_charge
+        )
+
+    if collected_results.keys():
+        output["set"] = collected_results
+        any_setcommand_executed = True
+
+    return any_setcommand_executed
+
+
+def _set_power_limits(e3dc: E3DC, power_limits: Dict) -> None:
     """Set power limits.
 
     Arguments:
@@ -27,10 +57,10 @@ def set_power_limits(e3dc: E3DC, power_limits: Dict) -> None:
         discharge_start=power_limits.discharge_start,
         keepAlive=KEEP_ALIVE,
     )
-    return build_result_dict(object_to_dictionary(power_limits), e3dc_result)
+    return _build_result_dict(_object_to_dictionary(power_limits), e3dc_result)
 
 
-def set_power_save(e3dc: E3DC, powersave: bool) -> None:
+def _set_power_save(e3dc: E3DC, powersave: bool) -> None:
     """Enable/Disable the powersave option.
 
     Arguments:
@@ -41,10 +71,10 @@ def set_power_save(e3dc: E3DC, powersave: bool) -> None:
         enable=powersave,
         keepAlive=KEEP_ALIVE,
     )
-    return build_result_dict({"enable": powersave}, e3dc_result)
+    return _build_result_dict({"enable": powersave}, e3dc_result)
 
 
-def set_weather_regulated_charge(e3dc: E3DC, weather_regulated_charge: bool) -> None:
+def _set_weather_regulated_charge(e3dc: E3DC, weather_regulated_charge: bool) -> None:
     """Enable/Disable weather regulated charging option.
 
     Arguments:
@@ -55,13 +85,13 @@ def set_weather_regulated_charge(e3dc: E3DC, weather_regulated_charge: bool) -> 
         enable=weather_regulated_charge,
         keepAlive=KEEP_ALIVE,
     )
-    return build_result_dict({"enable": weather_regulated_charge}, e3dc_result)
+    return _build_result_dict({"enable": weather_regulated_charge}, e3dc_result)
 
 
 # ---- Utilities -------------------------------------------------------------------------------------------------------
 
 
-def to_human_result(result_code: int) -> str:
+def _to_human_result(result_code: int) -> str:
     """Convert integer result code to human-readable result.
 
     Arguments:
@@ -82,7 +112,7 @@ def to_human_result(result_code: int) -> str:
     return human_result
 
 
-def object_to_dictionary(obj: Any) -> Dict:  # noqa: ANN401
+def _object_to_dictionary(obj: Any) -> Dict:  # noqa: ANN401
     """Generic conversion of python objects to dictionaries.
 
     Arguments:
@@ -98,7 +128,7 @@ def object_to_dictionary(obj: Any) -> Dict:  # noqa: ANN401
     return result
 
 
-def build_result_dict(input_arguments: Dict, result_code: int) -> Dict:
+def _build_result_dict(input_arguments: Dict, result_code: int) -> Dict:
     """Assemble a dictionary of a single setter command result.
 
     Arguments:
@@ -110,6 +140,6 @@ def build_result_dict(input_arguments: Dict, result_code: int) -> Dict:
     """
     return {
         "input_parameters": input_arguments,
-        "result": to_human_result(result_code),
+        "result": _to_human_result(result_code),
         "result_code": result_code,
     }

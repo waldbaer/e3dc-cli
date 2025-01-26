@@ -1,12 +1,15 @@
 """Test of query commands."""
 
+import os
+import re
 from typing import Optional
 
 import pytest
+from pytest_mock.plugin import MockerFixture
 
 from e3dc_cli.connection import ConnectionType
-from e3dc_cli.query import QueryType, merge_dictionaries, run_query
-from tests.util_runner import run_cli, run_cli_json, run_cli_stdout
+from e3dc_cli.query import QueryType, run_query
+from tests.util_runner import run_cli, run_cli_json
 
 # ---- Constants -------------------------------------------------------------------------------------------------------
 JSON_KEY_QUERY = "query"
@@ -202,7 +205,7 @@ def test_ct_query_single(
         capsys: System capture
     """
     query_type = str(query_type)
-    json_output = run_cli_stdout(f"--query {query_type}", capsys)
+    json_output = run_cli_json(f"--query {query_type}", capsys).stdout_as_json
 
     assert JSON_KEY_QUERY in json_output
     json_query = json_output[JSON_KEY_QUERY]
@@ -232,34 +235,19 @@ def test_ct_query_multi(
     connection_type = str(connection_type)
 
     cli_args = f"--connection.type {connection_type} --query {' '.join(all_query_types)}"
+
     if output_file is None:
-        json_output = run_cli_stdout(cli_args, capsys)
+        json_output = run_cli_json(cli_args, capsys).stdout_as_json
     else:
         output_file = f"{tmp_path}/{output_file}"
         cli_args += f" --output {output_file}"
-        json_output = run_cli_json(cli_args, output_file, capsys)
+        json_output = run_cli_json(cli_args, capsys, output_file).fileout_as_json
 
     assert JSON_KEY_QUERY in json_output
     json_query = json_output[JSON_KEY_QUERY]
 
     for query_type in QueryType:
         assert str(query_type) in json_query
-
-
-def test_ct_query_unknown(capsys: pytest.CaptureFixture[str]) -> None:
-    """Test the --query option with an unknown query type.
-
-    Arguments:
-        capsys: System capture
-    """
-    query_type = "UNKNOWN_QUERY_TYPE"
-
-    with pytest.raises(SystemExit) as sys_exit_info:
-        run_cli(f"--query {query_type}", capsys)
-
-    output = capsys.readouterr().out.rstrip()
-    assert output == ""
-    assert sys_exit_info.value.code > 0
 
 
 # ---- Unit Tests ------------------------------------------------------------------------------------------------------
@@ -279,12 +267,19 @@ def test_ut_query_type_unknown() -> None:
     assert f"Unknown/unsupported query type '{InvalidQueryConfig.name}'" in str(exception_info.value)
 
 
-def test_ut_query_merge_dictionaries_conflict() -> None:
-    """Test merging of dictionaries with conflicting keys (different values)."""
-    dict1 = {"noconflict": 23, "conflict": True}
-    dict2 = {"noconflict": 23, "conflict": False}
+def test_ct_query_merge_dictionaries_conflict(mocker: MockerFixture, capsys: pytest.CaptureFixture[str]) -> None:
+    """Test merging of dictionaries with conflicting keys (different values) in 'live_system' query.
 
-    with pytest.raises(ValueError) as exception_info:
-        merge_dictionaries(dict1, dict2)
+    Arguments:
+        mocker: Pytest mocker fixture.
+        capsys: System capture
+    """
+    get_system_status_mock = mocker.patch("e3dc.E3DC.get_system_status")
+    get_system_status_mock.return_value = {"noconflict": 23, "conflict": True}
 
-    assert "Detected duplicate key 'conflict'" in str(exception_info.value)
+    get_power_settings_mock = mocker.patch("e3dc.E3DC.get_power_settings")
+    get_power_settings_mock.return_value = {"noconflict": 23, "conflict": False}
+
+    cli_result = run_cli("--query live_system", capsys)
+    assert cli_result.exit_code != os.EX_OK
+    assert re.search(r".*Failed to merge dictionaries.*duplicate key 'conflict'", cli_result.stdout)
