@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.1] - 2025-01-2503
+## [1.0.2] - 2025-01-26
+
+### Fixes & Improvements
+- Rework error handling
+
+## [1.0.1] - 2025-01-25
 
 ### Fixes & Improvements
 - Typos & Project meta-data
