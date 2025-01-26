@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: e3dc-cli script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": ".venv/bin/e3dc-cli",
+      "args": ["-q", "live"],
+      "justMyCode": true
+    },
+    {
+      "name": "Python Debugger: Module pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "justMyCode": true,
+      "args": ["-k", "ct_"]
+    },
+  ]
+}
