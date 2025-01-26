@@ -8,7 +8,7 @@ import e3dc_cli
 import e3dc_cli.setter
 from e3dc_cli.connection import ConnectionType
 from e3dc_cli.query import QueryType
-from tests.util_runner import run_cli_stdout
+from tests.util_runner import run_cli_json
 
 # ---- Constants & Utils -----------------------------------------------------------------------------------------------
 JSON_KEY_QUERY = "query"
@@ -86,12 +86,14 @@ def test_ct_setter_boolean(
     """
     # Initial query of state for later revert
     status_query = f"--connection.type {connection_type} --query live_system "
-    initial_query = run_cli_stdout(status_query, capsys)
+    initial_query = run_cli_json(status_query, capsys).stdout_as_json
     initial_state = initial_query[JSON_KEY_QUERY][str(query_type)][json_query_key]
     assert isinstance(initial_state, bool)
 
     # Toggle boolean state
-    output_set_and_query = run_cli_stdout(f"{status_query} --set.{setter_type} {not initial_state}", capsys)
+    output_set_and_query = run_cli_json(
+        f"{status_query} --set.{setter_type} {not initial_state}", capsys
+    ).stdout_as_json
     set_result = output_set_and_query[JSON_KEY_SET][setter_type]
     assert set_result[JSON_KEY_SET_INPUT_PARAMS]["enable"] == (not initial_state)
     assert set_result[JSON_KEY_SET_RESULT] == RESULT_SUCCESS
@@ -101,7 +103,7 @@ def test_ct_setter_boolean(
     assert updated_state is not initial_state
 
     # Revert back to initial state
-    output_revert_and_query = run_cli_stdout(f"{status_query} --set.{setter_type} {initial_state}", capsys)
+    output_revert_and_query = run_cli_json(f"{status_query} --set.{setter_type} {initial_state}", capsys).stdout_as_json
     set_result = output_revert_and_query[JSON_KEY_SET][setter_type]
     assert set_result[JSON_KEY_SET_INPUT_PARAMS]["enable"] == initial_state
     assert set_result[JSON_KEY_SET_RESULT] == result
@@ -117,7 +119,7 @@ def test_ct_setter_boolean(
         (True, True, -100, -200),
         (
             None,  # Test missing enable parameter
-            True,  # enable param not set but implicitely enabled as max_charge / max_discharge is set
+            True,  # enable param not set but implicitly enabled as max_charge / max_discharge is set
             -200,
             -300,
         ),
@@ -146,7 +148,7 @@ def test_ct_setter_power_limits(
     status_query_json_key_max_discharge = "maxDischargePower"
 
     # Initial query of states for later revert
-    initial_state = run_cli_stdout(status_query, capsys)[JSON_KEY_QUERY][status_query_json_key]
+    initial_state = run_cli_json(status_query, capsys).stdout_as_json[JSON_KEY_QUERY][status_query_json_key]
     assert isinstance(initial_state[status_query_json_key_used], bool)
 
     new_max_charge = initial_state[status_query_json_key_max_charge] + max_charge
@@ -155,7 +157,7 @@ def test_ct_setter_power_limits(
     # Modify configured powerlimits
     power_limits_args = build_power_limits_args(enable, new_max_charge, new_max_discharge)
 
-    modified_state = run_cli_stdout(status_query + power_limits_args, capsys)
+    modified_state = run_cli_json(status_query + power_limits_args, capsys).stdout_as_json
     set_result = modified_state[JSON_KEY_SET]["power_limits"]
     assert set_result[JSON_KEY_SET_INPUT_PARAMS]["enable"] == expected_enable
     assert set_result[JSON_KEY_SET_INPUT_PARAMS]["max_charge"] == new_max_charge
@@ -175,7 +177,9 @@ def test_ct_setter_power_limits(
         initial_state[status_query_json_key_max_discharge],
     )
 
-    modified_state = run_cli_stdout(status_query + power_limits_args, capsys)[JSON_KEY_QUERY][status_query_json_key]
+    modified_state = run_cli_json(status_query + power_limits_args, capsys).stdout_as_json[JSON_KEY_QUERY][
+        status_query_json_key
+    ]
     assert modified_state[status_query_json_key_used] == initial_state[status_query_json_key_used]
     assert modified_state[status_query_json_key_max_charge] == initial_state[status_query_json_key_max_charge]
     assert modified_state[status_query_json_key_max_discharge] == initial_state[status_query_json_key_max_discharge]
@@ -184,8 +188,8 @@ def test_ct_setter_power_limits(
 # ---- Unit Tests ------------------------------------------------------------------------------------------------------
 def test_ut_setter_to_human_result() -> None:
     """Test to_human_result() API."""
-    assert e3dc_cli.setter.to_human_result(0) == "success"
-    assert e3dc_cli.setter.to_human_result(1) == "one value is nonoptimal"
-    assert e3dc_cli.setter.to_human_result(-1) == "fail"
-    assert e3dc_cli.setter.to_human_result(2) == "unknown"
-    assert e3dc_cli.setter.to_human_result(255) == "unknown"
+    assert e3dc_cli.setter._to_human_result(0) == "success"
+    assert e3dc_cli.setter._to_human_result(1) == "one value is nonoptimal"
+    assert e3dc_cli.setter._to_human_result(-1) == "fail"
+    assert e3dc_cli.setter._to_human_result(2) == "unknown"
+    assert e3dc_cli.setter._to_human_result(255) == "unknown"

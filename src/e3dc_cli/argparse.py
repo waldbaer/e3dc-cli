@@ -1,6 +1,7 @@
 """Argument / Configuration parsing."""
 
 # ---- Imports ----
+import sys
 from typing import Any, Dict, List, Optional
 
 from jsonargparse import ArgumentParser, DefaultHelpFormatter
@@ -268,9 +269,6 @@ def validate_config(args: Dict) -> None:
 
     Arguments:
         args: Parsed configuration options.
-
-    Raises:
-        ValueError: If any validation issue was found.
     """
     found_config_issues = []
     if args.connection.type == ConnectionType.local:
@@ -288,4 +286,7 @@ def validate_config(args: Dict) -> None:
             )
 
     if found_config_issues:
-        raise ValueError("\n".join(found_config_issues))
+        print("ERROR: invalid configuration / parameters:", file=sys.stderr)
+        for found_config_issue in found_config_issues:
+            print(f"- {found_config_issue}", file=sys.stderr)
+        sys.exit(1)

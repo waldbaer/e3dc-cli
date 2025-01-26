@@ -15,7 +15,7 @@
       "request": "launch",
       "module": "pytest",
       "justMyCode": true,
-      "args": ["-k", "ct_"]
+      "args": ["-k", "test_"]
     },
   ]
 }
