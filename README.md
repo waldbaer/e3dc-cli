@@ -271,7 +271,7 @@ Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {loc
                 [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
                 [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
-Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2024
+Query E3/DC solar inverter systems | Version 1.0.0 | Copyright 2022-2025
 
 Default Config File Locations:
   ['./config.json'], Note: default values below are the ones overridden by the contents of: ./config.json
