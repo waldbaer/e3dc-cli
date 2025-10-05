@@ -4,7 +4,7 @@ from typing import Optional
 
 import pytest
 
-import e3dc_cli.setter
+from e3dc_cli import setter
 from e3dc_cli.connection import ConnectionType
 from e3dc_cli.query import QueryType
 from tests.util_runner import run_cli_json
@@ -187,8 +187,8 @@ def test_ct_setter_power_limits(
 # ---- Unit Tests ------------------------------------------------------------------------------------------------------
 def test_ut_setter_to_human_result() -> None:
     """Test to_human_result() API."""
-    assert e3dc_cli.setter._to_human_result(0) == "success"
-    assert e3dc_cli.setter._to_human_result(1) == "one value is nonoptimal"
-    assert e3dc_cli.setter._to_human_result(-1) == "fail"
-    assert e3dc_cli.setter._to_human_result(2) == "unknown"
-    assert e3dc_cli.setter._to_human_result(255) == "unknown"
+    assert setter._to_human_result(0) == "success"
+    assert setter._to_human_result(1) == "one value is nonoptimal"
+    assert setter._to_human_result(-1) == "fail"
+    assert setter._to_human_result(2) == "unknown"
+    assert setter._to_human_result(255) == "unknown"
