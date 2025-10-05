@@ -4,7 +4,6 @@ from typing import Optional
 
 import pytest
 
-import e3dc_cli
 import e3dc_cli.setter
 from e3dc_cli.connection import ConnectionType
 from e3dc_cli.query import QueryType

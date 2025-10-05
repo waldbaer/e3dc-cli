@@ -23,7 +23,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [dependency-groups]
-lint = ["ruff>=0.8.3"]
+lint = ["ruff==0.13.3"]
 pytest = ["pytest-cov>=6.0.0", "pytest-mock>=3.14.0"]
 docs = ["mkdocs>=1.6.1", "mkdocs-material>=9.5.49"]
 
