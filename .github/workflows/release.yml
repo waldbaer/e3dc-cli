@@ -4,8 +4,9 @@ on:
 
 jobs:
   pypi-publish:
-    name: upload release to PyPI
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
+    environment: pypi-publish
     permissions:
       # This permission is needed for private repositories.
       contents: read
@@ -16,5 +17,8 @@ jobs:
 
       - uses: pdm-project/setup-pdm@v4
 
-      - name: Publish package distributions to PyPI
-        run: pdm publish
+      - name: Build wheel
+        run: pdm build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
