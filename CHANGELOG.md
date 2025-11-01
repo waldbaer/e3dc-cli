@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2025-11-01
+
+### Dependencies (only productive)
+- Bump pye3dc from 0.9.2 to 0.9.3
+
 ## [1.0.3] - 2025-04-02
 
 ### Dependencies (only productive)

@@ -328,8 +328,7 @@ def merge_dictionaries(*dicts: Dict) -> Dict:
                 if value != value_of_merged:
                     raise ValueError(
                         f"Failed to merge dictionaries. "
-                        f"Detected duplicate key '{key}' with different values: {
-                  value} <-> {value_of_merged}"
+                        f"Detected duplicate key '{key}' with different values: {value} <-> {value_of_merged}"
                     )
             merged[key] = value
     return merged
