@@ -21,6 +21,8 @@ JSON_KEYS_HISTORY_QUERY = [
     "consumption",
     "grid_power_in",
     "grid_power_out",
+    "pm0Production",
+    "pm1Production",
     "solarProduction",
     "startTimestamp",
     "stateOfCharge",
