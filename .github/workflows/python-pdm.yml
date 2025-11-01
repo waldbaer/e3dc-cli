@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  lint:
+  install_lint_and_format:
     runs-on: ubuntu-latest
     continue-on-error: true
 
