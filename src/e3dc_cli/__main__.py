@@ -13,7 +13,7 @@ from .setter import run_set_commands
 # ---- Module Meta-Data ------------------------------------------------------------------------------------------------
 __prog__ = "e3dc-cli"
 __dist_name__ = "e3dc_cli"
-__copyright__ = "Copyright 2022-2025"
+__copyright__ = "Copyright 2022-2026"
 __author__ = "Sebastian Waldvogel"
 __dist_metadata__ = importlib.metadata.metadata("e3dc_cli")
 

@@ -264,12 +264,9 @@ Extended configuration settings (see [chapter 'configuration' of python-e3dc](ht
 ### All Available Parameters and Configuration Options
 Details about all available options:
 ```
-Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS]
-                [--connection.user USER] [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD]
-                [--connection.serial_number SERIAL_NUMBER]
-                [-q [{static_system,live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,
-                history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,
-                history_previous_year,history_total} ...]]
+Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {local,web}] [--connection.address ADDRESS] [--connection.user USER]
+                [--connection.password PASSWORD] [--connection.rscp_password RSCP_PASSWORD] [--connection.serial_number SERIAL_NUMBER]
+                [-q [{static_system,live,live_system,live_powermeter,live_battery,live_inverter,live_wallbox,history_today,history_yesterday,history_week,history_previous_week,history_month,history_previous_month,history_year,history_previous_year,history_total} ...]]
                 [--set.power_limits.enable {true,false}] [--set.power_limits.max_charge MAX_CHARGE]
                 [--set.power_limits.max_discharge MAX_DISCHARGE] [--set.power_limits.discharge_start DISCHARGE_START]
                 [--set.powersave {true,false}] [--set.weather_regulated_charge {true,false}]
@@ -277,7 +274,7 @@ Usage: e3dc-cli [-h] [--version] [-c CONFIG] [-o OUTPUT] [--connection.type {loc
                 [--extended_config.pvis { EXTENDED SOLAR INVERTERS CONFIG HIERARCHY }]
                 [--extended_config.batteries { EXTENDED BATTERIES CONFIG HIERARCHY }]
 
-Query E3/DC solar inverter systems | Version 1.0.4 | Copyright 2022-2025
+Query E3/DC solar inverter systems | Version 1.0.5 | Copyright 2022-2026
 
 Default Config File Locations:
   ['./config.json'], Note: default values below are the ones overridden by the contents of: ./config.json
