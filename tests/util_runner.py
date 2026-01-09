@@ -5,7 +5,7 @@ import os
 import shlex
 from ast import Dict
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 import pytest
 
@@ -22,10 +22,10 @@ class CliResult:
     stdout: str
     stderr: str
     stdout_lines: List[str]
-    stdout_as_json: Optional[dict]
+    stdout_as_json: dict | None
     fileout: str
     fileout_lines: List[str]
-    fileout_as_json: Optional[dict]
+    fileout_as_json: dict | None
 
     def __init__(
         self,
@@ -33,10 +33,10 @@ class CliResult:
         stdout: str,
         stderr: str,
         stdout_lines: List[str],
-        stdout_as_json: Optional[dict] = None,
+        stdout_as_json: dict | None = None,
         fileout: str = None,
         fileout_lines: List[str] = None,
-        fileout_as_json: Optional[dict] = None,
+        fileout_as_json: dict | None = None,
     ) -> None:
         """Construct.
 
@@ -60,7 +60,7 @@ class CliResult:
         self.fileout_as_json = fileout_as_json
 
 
-def run_cli(cli_args: str, capsys: pytest.CaptureFixture, output_path: Optional[str] = None) -> CliResult:
+def run_cli(cli_args: str, capsys: pytest.CaptureFixture, output_path: str | None = None) -> CliResult:
     """Run the command line util with the passed arguments.
 
     Arguments:
@@ -87,7 +87,7 @@ def run_cli(cli_args: str, capsys: pytest.CaptureFixture, output_path: Optional[
     )
 
 
-def run_cli_json(cli_args: str, capsys: pytest.CaptureFixture, output_path: Optional[str] = None) -> Dict:
+def run_cli_json(cli_args: str, capsys: pytest.CaptureFixture, output_path: str | None = None) -> Dict:
     """Run the command line util with the passed arguments and capture the outputs from a JSON file.
 
     Arguments:
