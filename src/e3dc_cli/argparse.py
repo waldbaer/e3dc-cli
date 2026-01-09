@@ -2,7 +2,7 @@
 
 # ---- Imports ----
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from jsonargparse import ArgumentParser, DefaultHelpFormatter
 from pydantic import SecretStr
@@ -86,7 +86,7 @@ Example:
     arg_parser.add_argument(
         "-o",
         "--output",
-        type=Optional[str],
+        type=str | None,
         help="Path of JSON output file. If not set JSON output is written to console / stdout",
     )
 
@@ -103,7 +103,7 @@ web    Use web connection
     )
     arg_parser.add_argument(
         "--connection.address",
-        type=Optional[str],
+        type=str | None,
         help="""IP or DNS address of the E3/DC system.
 Only relevant for connection type 'local'.
 """,
@@ -120,14 +120,14 @@ Only relevant for connection type 'local'.
     )
     arg_parser.add_argument(
         "--connection.rscp_password",
-        type=Optional[SecretStr],
+        type=SecretStr | None,
         help="""RSCP password. Set on the device via Main Page -> Personalize -> User profile -> RSCP password.
 Only relevant for connection type 'local',
 """,
     )
     arg_parser.add_argument(
         "--connection.serial_number",
-        type=Optional[SecretStr],
+        type=SecretStr | None,
         help="""Serial number of the system (see 'SN' in E3/DC portal).
 Only relevant for connection type 'web'.
 """,
@@ -168,7 +168,7 @@ Accumulated Historic Values (including production, consumption, battery in/out p
     # ---- Setter ----
     arg_parser.add_argument(
         "--set.power_limits.enable",
-        type=Optional[bool],
+        type=bool | None,
         metavar="{true,false}",
         help="""true: enable manual SmartPower limits. false: Use automatic mode.
 Automatically set to 'true' if not explicitly set and any other manual limit
@@ -177,7 +177,7 @@ Automatically set to 'true' if not explicitly set and any other manual limit
     )
     arg_parser.add_argument(
         "--set.power_limits.max_charge",
-        type=Optional[int],
+        type=int | None,
         help="""SmartPower maximum charging power. Unit: Watt.
 Automatically set to the systems max. battery charge power limit if not explicitly set.
 Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
@@ -185,7 +185,7 @@ Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
     )
     arg_parser.add_argument(
         "--set.power_limits.max_discharge",
-        type=Optional[int],
+        type=int | None,
         help="""SmartPower maximum discharging power. Unit: Watt.
 Automatically set to the systems max. battery discharge power limit if not explicitly set.
 Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
@@ -193,7 +193,7 @@ Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
     )
     arg_parser.add_argument(
         "--set.power_limits.discharge_start",
-        type=Optional[int],
+        type=int | None,
         help="""SmartPower lower charge / discharge threshold. Unit: Watt.
 Automatically set to the systems discharge default threshold if not explicitly set.
 Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
@@ -202,13 +202,13 @@ Only relevant if set.power_limits.enable is 'true' or not explicitly configured.
 
     arg_parser.add_argument(
         "--set.powersave",
-        type=Optional[bool],
+        type=bool | None,
         metavar="{true,false}",
         help="Enable / Disable PowerSave of the inverter (inverter switches to standby mode when not in use).",
     )
     arg_parser.add_argument(
         "--set.weather_regulated_charge",
-        type=Optional[bool],
+        type=bool | None,
         metavar="{true,false}",
         help="Enabled / Disable optimized charging based on the weather forecast.",
     )

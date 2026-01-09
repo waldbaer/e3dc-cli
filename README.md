@@ -40,7 +40,7 @@ Changes can be followed at [CHANGELOG.md](https://github.com/waldbaer/e3dc-cli/b
 
 ## Requirements ##
 
- - [Python 3.9](https://www.python.org/)
+ - [Python 3.10](https://www.python.org/)
  - [pip](https://pip.pypa.io/) or [pipx](https://pipx.pypa.io/stable/)
 
  For development:

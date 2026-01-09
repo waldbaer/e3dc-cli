@@ -1,7 +1,5 @@
 """Test of setter commands."""
 
-from typing import Optional
-
 import pytest
 
 from e3dc_cli import setter
@@ -125,7 +123,7 @@ def test_ct_setter_boolean(
     ],
 )
 def test_ct_setter_power_limits(
-    enable: Optional[bool],
+    enable: bool | None,
     expected_enable: bool,
     max_charge: int,
     max_discharge: int,

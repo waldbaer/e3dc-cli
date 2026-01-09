@@ -2,7 +2,6 @@
 
 import os
 import re
-from typing import Optional
 
 import pytest
 from pytest_mock.plugin import MockerFixture
@@ -223,7 +222,7 @@ def test_ct_query_single(
 @pytest.mark.parametrize("connection_type", [ConnectionType.local, ConnectionType.web])
 @pytest.mark.parametrize("output_file", [None, "e3dc_cli_test.json"])
 def test_ct_query_multi(
-    connection_type: ConnectionType, output_file: Optional[str], tmp_path: str, capsys: pytest.CaptureFixture[str]
+    connection_type: ConnectionType, output_file: str | None, tmp_path: str, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """Test the --query option for multiple queries.
 
